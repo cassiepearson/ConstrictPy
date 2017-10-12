@@ -14,6 +14,12 @@ import numpy as np # NumPy statistical package
 #import cobra # Not yet utilized
 #import matplotlib.pyplot as plt # Matplotlib for plotting data with Juypter
 
+'''
+Data output - Defines output behavior
+'''
+# Define output directory
+output_dir = "output-files/"
+
 
 '''
 Main function
@@ -109,7 +115,7 @@ pandas.
 def StdDescStats(data_frame, name):
     # All optional parameters excluded
     desc_stats = data_frame.describe()
-    filename = "desc_stats_" + name
+    filename = output_dir + "desc_stats_" + name
     desc_stats.to_csv(filename)
     print "\nDescriptive Statistics: \n"
     print desc_stats
@@ -123,28 +129,28 @@ exclude NA/null variables.
 def StdCorrCov(data_frame, name):
     # Standard Correlation Coefficient - Pearson Correlation
     std_corr_frame = data_frame.corr(method="pearson")
-    filename = "std_corr_frame_" + name
+    filename = output_dir + "std_corr_frame_" + name
     std_corr_frame.to_csv(filename)
     print "\nStandard Correlation: \n"
     print std_corr_frame
 
     # Spearman rank Correlation
     sprc_corr_frame = data_frame.corr(method="spearman")
-    filename = "sprc_corr_frame_" + name
+    filename = output_dir + "sprc_corr_frame_" + name
     sprc_corr_frame.to_csv(filename)
     print "\nSpearman Correlation: \n"
     print sprc_corr_frame
 
     # Kendall Tau Correlation
     ktc_corr_frame = data_frame.corr(method="kendall")
-    filename = "ktc_corr_frame_" + name
+    filename = output_dir + "ktc_corr_frame_" + name
     ktc_corr_frame.to_csv(filename)
     print "\nKendall Tau Correlation: \n"
     print ktc_corr_frame
 
     # Standard Covariance
     cov_frame = data_frame.cov()
-    filename = "cov_frame_" + name
+    filename = output_dir + "cov_frame_" + name
     cov_frame.to_csv(filename)
     print "\nPairwise Covariance: \n"
     print cov_frame
@@ -171,7 +177,7 @@ def WGCNA(data_frame, name):
     #print wc_adj_log
 
     # Export to csv
-    filename = "wc_corr_adj_" + name
+    filename = output_dir + "wc_corr_adj_" + name
     wc_corr_adj.to_csv(filename)
 
     print '\nWeighted Correlation Network Analysis Matrix:\n'
@@ -184,7 +190,7 @@ Compute numerical data ranks (1 through n) along provided axis.
 def StdDataRanking(data_frame, rank, name):
     # Data Frame ranking, rank = 0 for rows, rank = 1 for columns
     ranked_frame = data_frame.rank(rank)
-    filename = "ranked_frame_" + name
+    filename = output_dir + "ranked_frame_" + name
     ranked_frame.to_csv(filename)
     print "\nData Frame Ranking: \n"
     print ranked_frame
