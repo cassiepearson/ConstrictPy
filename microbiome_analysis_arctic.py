@@ -37,6 +37,7 @@ def main():
     sheet_2016_2014 = excel_file.parse("sample_conditions_year_2016_2014")
     sheet_16S_2014_OTU = excel_file.parse("16S_2014_OTU")
     sheet_16S_2016_OTU = excel_file.parse("16S_2016_OTU")
+    
 
     '''
     Analysis of all data within each sheet
@@ -194,11 +195,61 @@ def StdDataRanking(data_frame, rank, name):
     ranked_frame.to_csv(filename)
     print "\nData Frame Ranking: \n"
     print ranked_frame
+    
+    
+'''
+Clustering
+Measure of data smilarity. Hierarchical methods cluster based on distance
+between nodes. K-means will not be utilized for this analysis.
+'''
+def Clustering(data_frame):
+    # Agglomerative clustering
+    cluster_linkage = linkage(data_frame)
+    print cluster_linkage
+    cluster_linkage_validity = is_valid_linkage(cluster_linkage)
+    print cluster_linkage_validity
+    # Nearest linkage on the condensed distance matrix
+    cluster_single = single(data_frame)
+    print cluster_single
+    # WPGMA linkage on the condensed distance matrix
+    cluster_weighted = weighted(data_frame)
+    print cluster_weighted
+    # Centroid linkage
+    cluster_centroid = centroid(data_frame)
+    print cluster_centroid
+    # Average linkage on a condensed distance matrix
+    cluster_average = average(data_frame)
+    print cluster_average
 
 '''
-Partial Least Squares Data Analysis (PLSDA)
+Centrality
+Measure of influence of a node in a network.
+'''
+def Centrality(data_frame, source, target):
+    # Create a NetworkX graph
+    G = nx.from_pandas_dataframe(data_frame, source, target, True)
+
+    # Use network x and numpy to measure node centrality
+    # Measure of influence of a node
+    eigen_centrality = nx.eigenvector_centrality_numpy(G)
+    print eigen_centrality
+    # Number of ties a node has to another node
+    degree_centrality = nx.degree_centrality(G)
+    print degree_centrality
+    # Sum of the shortest path lengths from a node to all other nodes
+    closeness_centrality = nx.closeness_centrality(G)
+    print closeness_centrality
+    # Measure of centrality based on shortest paths
+    betweenness_centrality = nx.betweenness_centrality(G)
+    print betweenness_centrality
+
+'''
+Partial Least Squares Discriminant Analysis (PLS-DA)
 TODO
 '''
+#def PLSDA(data_frame, name):
+    
+
 
 '''
 Subnetwork Analysis
