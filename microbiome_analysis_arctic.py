@@ -31,6 +31,7 @@ def main():
     '''
     Data import - Originally was separated function, hard coded for convience
     '''
+    
     # Load spreadsheet
     excel_file = pd.ExcelFile("Prepared_Data.xlsx")
     # Load each sheet into a separate dataframe
@@ -45,71 +46,37 @@ def main():
     '''
     Analysis of all data within each sheet
     '''
+    
+    initial_frames = {"sheet_2014"          : sheet_2014, 
+                      "sheet_2016"          : sheet_2016, 
+                      "sheet_OTU_abundance" : sheet_OTU_abundance,
+                      "sheet_2016_2014"     : sheet_2016_2014, 
+                      "sheet_16S_2014_OTU"  : sheet_16S_2014_OTU, 
+                      "sheet_16S_2016_OTU"  : sheet_16S_2016_OTU,
+                     }
+    
     print "Analysis of data within each sheet:\n"
-    # sample_conditions_year_2014 analysis
-    print "\nAnalysis of sample_conditions_year_2014 data:\n"
-    StdDescStats(sheet_2014, "sheet_2014")
-    StdCorrCov(sheet_2014, "sheet_2014")
-    StdDataRanking(sheet_2014,1, "sheet_2014")
-    WGCNA(sheet_2014, "sheet_2014")
-
-    # sample_conditions_year_2016 analysis
-    print "\nAnalysis of sample_conditions_year_2016 data:\n"
-    StdDescStats(sheet_2016, "sheet_2016")
-    StdCorrCov(sheet_2016, "sheet_2016")
-    StdDataRanking(sheet_2016,1, "sheet_2016")
-    WGCNA(sheet_2016, "sheet_2016")
-
-    # Sorted_OTU_Abundance analysis
-    print "\nAnalysis of Sorted_OTU_Abundance data:\n"
-    StdDescStats(sheet_OTU_abundance, "sheet_OTU_abundance")
-    StdCorrCov(sheet_OTU_abundance, "sheet_OTU_abundance")
-    StdDataRanking(sheet_OTU_abundance,1, "sheet_OTU_abundance")
-    WGCNA(sheet_OTU_abundance, "sheet_OTU_abundance")
-
-    # sample_conditions_year_2016_2014 analysis
-    print "\nAnalysis of sample_conditions_year_2016_2014 data:\n"
-    StdDescStats(sheet_2016_2014, "sheet_2016_2014")
-    StdCorrCov(sheet_2016_2014, "sheet_2016_2014")
-    StdDataRanking(sheet_2016_2014,1, "sheet_2016_2014")
-    WGCNA(sheet_2016_2014, "sheet_2016_2014")
-
-    # 16S_2014_OTU analysis
-    print "\nAnalysis of 16S_2014_OTU data:\n"
-    StdDescStats(sheet_16S_2014_OTU, "sheet_16S_2014_OTU")
-    StdCorrCov(sheet_16S_2014_OTU, "sheet_16S_2014_OTU")
-    StdDataRanking(sheet_16S_2014_OTU,1, "sheet_16S_2014_OTU")
-    WGCNA(sheet_16S_2014_OTU, "sheet_16S_2014_OTU")
-
-    # 16S_2016_OTU analysis
-    print "\nAnalysis of 16S_2016_OTU data:\n"
-    StdDescStats(sheet_16S_2016_OTU, "sheet_16S_2016_OTU")
-    StdCorrCov(sheet_16S_2016_OTU, "sheet_16S_2016_OTU")
-    StdDataRanking(sheet_16S_2016_OTU,1, "sheet_16S_2016_OTU")
-    WGCNA(sheet_16S_2016_OTU, "sheet_16S_2016_OTU")
+    for label in initial_frames:
+        print "\nAnalysis of " + label + "\n"
+        StdDescStats(initial_frames[label], label)
+        StdCorrCov(initial_frames[label], label)
+        StdDataRanking(initial_frames[label], 1, label)
+        WGCNA(initial_frames[label], label)
+        
 
     '''
     Statistics on Explanatory Factors
     '''
-    print "\nStatistics on Explanatory Factors:\n"
+    #print "\nStatistics on Explanatory Factors:\n"
 
     # 2016: pH, NO2-N
-    print "Statistics of pH, NO2-N from 2016 data:"
-    pH_2016_var =  sheet_2016["pH"].var()
-    NO2_2016_var = sheet_2016["NO2-N"].var()
-    pH_NO2_2016_cov = sheet_2016["pH"].cov(sheet_2016["NO2-N"])
-    print "pH variance: " + str(pH_2016_var)
-    print "NO2-N variance: " + str(NO2_2016_var)
-    print "NO2-N, pH covariance: " + str(pH_NO2_2016_cov)
-
-    # 2014 and 2016: NO2-N, NO3-N
-    print "\nStatistics of NO2-N, NO3-N from 2014, 2016 data:"
-    NO2_2014_16_var = sheet_2016_2014["NO2-N"].var()
-    NO3_2014_16_var = sheet_2016_2014["NO3-N"].var()
-    NO2_NO3_2014_16_cov = sheet_2016_2014["NO2-N"].cov(sheet_2016_2014["NO3-N"])
-    print "NO2-N variance: " + str(NO2_2014_16_var)
-    print "NO3-N variance: " + str(NO3_2014_16_var)
-    print "NO2-N, NO3-N covariance: " + str(NO2_NO3_2014_16_cov)
+    #print "Statistics of pH, NO2-N from 2016 data:"
+    #pH_2016_var =  sheet_2016["pH"].var()
+    #NO2_2016_var = sheet_2016["NO2-N"].var()
+    #pH_NO2_2016_cov = sheet_2016["pH"].cov(sheet_2016["NO2-N"])
+    #print "pH variance: " + str(pH_2016_var)
+    #print "NO2-N variance: " + str(NO2_2016_var)
+    #print "NO2-N, pH covariance: " + str(pH_NO2_2016_cov)
 
 '''
 Pandas Descriptive Statistics
