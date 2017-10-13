@@ -1,7 +1,10 @@
 '''
 Artic Microbiome Data Analysis
-By Christopher Negrich contact at cnegrich@gmail.com
-September 2017
+Authored by:
+    Christopher Negrich contact at cnegrich@gmail.com
+    Andrew Hoetker contact at ahoetker@asu.edu
+    Courtney Johnson contact at cejohn32@asu.edu
+Last Updated: October 2017
 
 This program is designed to allow for a variety of similar data sets to be
 analyzed. Modifying the main function and splitting the rest into module(s)
