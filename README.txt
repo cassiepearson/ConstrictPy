@@ -1,7 +1,7 @@
 // README.txt
 
-Author:         Christopher Negrich
-Contact:        cnegrich@gmail.com, cnegrich@asu.edu
+Author:         Christopher Negrich, Andrew Hoetker, Courtney Johnson
+Contact:        cnegrich@gmail.com, ahoetker@me.com, cejohn32@asu.edu
 Github:         cnegrich
 
 Date Created:   September 27, 2017
