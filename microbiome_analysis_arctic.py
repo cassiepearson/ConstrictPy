@@ -10,6 +10,12 @@ This program is designed to allow for a variety of similar data sets to be
 analyzed. Modifying the main function and splitting the rest into module(s)
 as needed could generalize the functionality if needed for alternative data sets.
 
+Work for 10/20:
+    -Rewrite main to include all desired analysis
+    -Re-clean the prepared data spreadsheet
+    -Include file output for the clustering, centrality functions
+    -Discuss work moving forward for tool generatlization
+
 Modifications for generalization into tool (next step):
     //TODO:
         -Rewrite everything in Python 3
@@ -37,17 +43,19 @@ import numpy as np # NumPy statistical package
 import scipy.cluster.hierarchy as hier # Wild card imported for methods testing
 import networkx as nx
 
-'''
-Data output - Defines output behavior
-'''
-# Define output directory
-output_dir = "output-files/"
 
 
 '''
 Main function
 '''
 def main():
+    # Data import and output are temporary placeholders for analysis instance
+    '''
+    Data output - Defines output behavior
+    '''
+    # Define output directory
+    output_dir = "output-files/"
+
     '''
     Data import - Originally was separated function, hard coded for convience
     '''
