@@ -6,16 +6,18 @@ Github:         cnegrich
 
 Date Created:   September 27, 2017
 Language Used:  Python 2.7.13
-Packages Used:  Pandas, NumPy
+Packages Used:  Pandas, NumPy, NetworkX, SciPy
 
 Basic pip commands for install:
   For Linux/Unix based Users:
-    pip install pandas && pip install numpy
+    pip install pandas && pip install numpy && pip install networkx
+      -This will automatically install scipy and numpy-mkl
   For Windows Users:
-    .\python -m pip install numpy
+    Python Wheels: http://www.lfd.uci.edu/~gohlke/pythonlibs/
+    .\python -m pip install "C:\..filepath..\scipy.whl"
+    .\python -m pip install "C:\..filepath..\numpy-mkl.whl"
+    .\python -m pip install "C:\..filepath..\networkx.whl"
     .\python -m pip install pandas
-        -Note: SciPy governs over NumPy and may also have to be installed,
-               if needed, it should be installed automatically
 
 Some Notes on Design Philosophy and Methods:
   For all analysis, the entire table provided is used. This will need to be
@@ -43,13 +45,14 @@ File Output Names and Corresponding Data Contained:
 Usage Instructions:
   For this analysis:
     1. Make sure that python 2.7.XX is the default version of python
-    2. Install dependencies (pip install pandas && pip install numpy)
+    2. Install dependencies
+      pip install pandas && pip install numpy && pip install networkx
     3. Run: python microbiome_analysis_arctic.py
 
   For generalized Use (Recommended that code is prepared in new framework first):
     1. Clean excel sheets in similar manner to Prepared_Data.xlsx
     2. Change hardcoded names
-    3. Carry changes forward throughout the method calls
+    3. Carry changes forward throughout the main
     4. Implement any additional needed methods
     5. Run
       Basic Steps for Program Generalization:
@@ -58,7 +61,7 @@ Usage Instructions:
              Output support neeeded: .xlsx, .csv, .tsv, .txt
         2. Create a main() function that governs a basic UI
         3. Optional analysis algorithms implemented
-        4. Install package created to automatically install dependencies
+        4. Install script created to automatically install dependencies
 
 Sources:
   Pandas API:

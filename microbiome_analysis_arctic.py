@@ -9,13 +9,33 @@ Last Updated: October 2017
 This program is designed to allow for a variety of similar data sets to be
 analyzed. Modifying the main function and splitting the rest into module(s)
 as needed could generalize the functionality if needed for alternative data sets.
+
+Modifications for generalization into tool (next step):
+    //TODO:
+        -Rewrite everything in Python 3
+        -Prepare a formalized and breif project style guide
+
+        -Port all documentation to github
+        -Background research - Citations
+        -Create a user interface (Chris)
+        -Create a robust file import/export functions
+            -Ask Dr. Cao about what programs we will be taking input from
+        -Write mathematical documentation for implementations
+        -Port algorithms to R
+        -Create functions for graphing
+        -Further subdivide and enumerate possible algorithms
+            -Allow for as much user choice as possible
+        -Find test data sets - Random data, other experimental data
+
+For internal team reference:
+    -Search "***" for high priority changes
 '''
 # Import all needed packages, see documentation for details
 import pandas as pd
 import numpy as np # NumPy statistical package
 #import scipy as sp # SciPy package for statistical analysis
-#import cobra # Not yet utilized
-#import matplotlib.pyplot as plt # Matplotlib for plotting data with Juypter
+import scipy.cluster.hierarchy as hier # Wild card imported for methods testing
+import networkx as nx
 
 '''
 Data output - Defines output behavior
@@ -31,7 +51,6 @@ def main():
     '''
     Data import - Originally was separated function, hard coded for convience
     '''
-    
     # Load spreadsheet
     excel_file = pd.ExcelFile("Prepared_Data.xlsx")
     # Load each sheet into a separate dataframe
@@ -41,28 +60,28 @@ def main():
     sheet_2016_2014 = excel_file.parse("sample_conditions_year_2016_2014")
     sheet_16S_2014_OTU = excel_file.parse("16S_2014_OTU")
     sheet_16S_2016_OTU = excel_file.parse("16S_2016_OTU")
-    
+
 
     '''
     Analysis of all data within each sheet
     '''
-    
-    initial_frames = {"sheet_2014"          : sheet_2014, 
-                      "sheet_2016"          : sheet_2016, 
+    initial_frames = {"sheet_2014"          : sheet_2014,
+                      "sheet_2016"          : sheet_2016,
                       "sheet_OTU_abundance" : sheet_OTU_abundance,
-                      "sheet_2016_2014"     : sheet_2016_2014, 
-                      "sheet_16S_2014_OTU"  : sheet_16S_2014_OTU, 
+                      "sheet_2016_2014"     : sheet_2016_2014,
+                      "sheet_16S_2014_OTU"  : sheet_16S_2014_OTU,
                       "sheet_16S_2016_OTU"  : sheet_16S_2016_OTU,
                      }
-    
+
+    # ***Needs to be altered to handle returns and new function names
     print "Analysis of data within each sheet:\n"
     for label in initial_frames:
         print "\nAnalysis of " + label + "\n"
         StdDescStats(initial_frames[label], label)
-        StdCorrCov(initial_frames[label], label)
+        StdCorr(initial_frames[label], label)
         StdDataRanking(initial_frames[label], 1, label)
         WGCNA(initial_frames[label], label)
-        
+
 
     '''
     Statistics on Explanatory Factors
@@ -90,41 +109,49 @@ def StdDescStats(data_frame, name):
     desc_stats.to_csv(filename)
     print "\nDescriptive Statistics: \n"
     print desc_stats
+    return desc_stats
 
 '''
-Pandas Standard Statistical Correlation
+Pandas Standard Statistical Correlation Methods
 Using the data frame correlation methods built into pandas. Correlation is done
 by columns, transpose for correlation by rows. This method will automatically
 exclude NA/null variables.
 '''
-def StdCorrCov(data_frame, name):
+def StdCorr(data_frame, name):
     # Standard Correlation Coefficient - Pearson Correlation
     std_corr_frame = data_frame.corr(method="pearson")
     filename = output_dir + "std_corr_frame_" + name
     std_corr_frame.to_csv(filename)
     print "\nStandard Correlation: \n"
     print std_corr_frame
+    return std_corr_frame
 
+def SprCorr(data_frame, name):
     # Spearman rank Correlation
     sprc_corr_frame = data_frame.corr(method="spearman")
     filename = output_dir + "sprc_corr_frame_" + name
     sprc_corr_frame.to_csv(filename)
     print "\nSpearman Correlation: \n"
     print sprc_corr_frame
+    return sprc_corr_frame
 
+def KtCorr(data_frame, name):
     # Kendall Tau Correlation
     ktc_corr_frame = data_frame.corr(method="kendall")
     filename = output_dir + "ktc_corr_frame_" + name
     ktc_corr_frame.to_csv(filename)
     print "\nKendall Tau Correlation: \n"
     print ktc_corr_frame
+    return ktc_corr_frame
 
+def StdCov(data_frame, name):
     # Standard Covariance
     cov_frame = data_frame.cov()
     filename = output_dir + "cov_frame_" + name
     cov_frame.to_csv(filename)
     print "\nPairwise Covariance: \n"
     print cov_frame
+    return cov_frame
 
 '''
 Weighted Correlation Network Analysis
@@ -153,6 +180,7 @@ def WGCNA(data_frame, name):
 
     print '\nWeighted Correlation Network Analysis Matrix:\n'
     print wc_corr_adj
+    return wc_corr_adj
 
 '''
 Pandas Standard Data Ranking
@@ -165,37 +193,56 @@ def StdDataRanking(data_frame, rank, name):
     ranked_frame.to_csv(filename)
     print "\nData Frame Ranking: \n"
     print ranked_frame
-    
-    
+    return ranked_frame
+
+
 '''
 Clustering
 Measure of data smilarity. Hierarchical methods cluster based on distance
-between nodes. K-means will not be utilized for this analysis.
+between nodes. K-means will not be utilized for this analysis, but will be
+implemented in the generalized tool.
 '''
-def Clustering(data_frame):
+def ClusteringLinkage(data_frame):
     # Agglomerative clustering
-    cluster_linkage = linkage(data_frame)
+    cluster_linkage = hier.linkage(data_frame)
     print cluster_linkage
-    cluster_linkage_validity = is_valid_linkage(cluster_linkage)
-    print cluster_linkage_validity
+
+    # Check agglomerative clustering linkage validity
+    cluster_linkage_validity = hier.is_valid_linkage(cluster_linkage)
+    print "\nValidity of clustering linkage: " + cluster_linkage_validity + "\n"
+
+    # Return the linkage if valid
+    if(cluster_linkage_validity == True): return cluster_linkage
+
+def ClusteringSingle(data_frame):
     # Nearest linkage on the condensed distance matrix
-    cluster_single = single(data_frame)
+    cluster_single = hier.single(data_frame)
     print cluster_single
+    return cluster_single
+
+def ClusteringWeighted(data_frame):
     # WPGMA linkage on the condensed distance matrix
-    cluster_weighted = weighted(data_frame)
+    cluster_weighted = hier.weighted(data_frame)
     print cluster_weighted
+    return cluster_weighted
+
+def ClusteringCentroid(data_frame):
     # Centroid linkage
-    cluster_centroid = centroid(data_frame)
+    cluster_centroid = hier.centroid(data_frame)
     print cluster_centroid
+    return cluster_centroid
+
+def ClusteringAverage(data_frame):
     # Average linkage on a condensed distance matrix
-    cluster_average = average(data_frame)
+    cluster_average = hier.average(data_frame)
     print cluster_average
+    return cluster_average
 
 '''
 Centrality
 Measure of influence of a node in a network.
 '''
-def Centrality(data_frame, source, target):
+def CentralityEigen(data_frame, source, target):
     # Create a NetworkX graph
     G = nx.from_pandas_dataframe(data_frame, source, target, True)
 
@@ -203,28 +250,34 @@ def Centrality(data_frame, source, target):
     # Measure of influence of a node
     eigen_centrality = nx.eigenvector_centrality_numpy(G)
     print eigen_centrality
+    return eigen_centrality
+
+def CentralityDegree(data_frame, source, target):
+    # Create a NetworkX graph
+    G = nx.from_pandas_dataframe(data_frame, source, target, True)
+
     # Number of ties a node has to another node
     degree_centrality = nx.degree_centrality(G)
     print degree_centrality
+    return degree_centrality
+
+def CentralityClose(data_frame, source, target):
+    # Create a NetworkX graph
+    G = nx.from_pandas_dataframe(data_frame, source, target, True)
+
     # Sum of the shortest path lengths from a node to all other nodes
     closeness_centrality = nx.closeness_centrality(G)
     print closeness_centrality
+    return closeness_centrality
+
+def CentralityBtwn(data_frame, source, target):
+    # Create a NetworkX graph
+    G = nx.from_pandas_dataframe(data_frame, source, target, True)
+
     # Measure of centrality based on shortest paths
     betweenness_centrality = nx.betweenness_centrality(G)
     print betweenness_centrality
-
-'''
-Partial Least Squares Discriminant Analysis (PLS-DA)
-TODO
-'''
-#def PLSDA(data_frame, name):
-    
-
-
-'''
-Subnetwork Analysis
-TODO
-'''
+    return betweenness_centrality
 
 # Initiate the main function and prevent the others from running without being
 # called
