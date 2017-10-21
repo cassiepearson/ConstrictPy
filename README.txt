@@ -1,8 +1,8 @@
 // README.txt
 
-Author:         Christopher Negrich, Andrew Hoetker, Courtney Johnson
+Authors:        Christopher Negrich, Andrew Hoetker, Courtney Johnson
 Contact:        cnegrich@gmail.com, ahoetker@me.com, cejohn32@asu.edu
-Github:         cnegrich
+Github:         cnegrich, ahoetker, cejohn32
 
 Date Created:   September 27, 2017
 Language Used:  Python 2.7.13
@@ -18,6 +18,7 @@ Basic pip commands for install:
     .\python -m pip install "C:\..filepath..\numpy-mkl.whl"
     .\python -m pip install "C:\..filepath..\networkx.whl"
     .\python -m pip install pandas
+      Alternatively, Windows users may want to use anaconda as a package manager
 
 Some Notes on Design Philosophy and Methods:
   For all analysis, the entire table provided is used. This will need to be
