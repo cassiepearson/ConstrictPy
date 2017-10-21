@@ -1,4 +1,4 @@
-output-files/*
+output-files/**
 *.pyc
 .DS_Store
 
