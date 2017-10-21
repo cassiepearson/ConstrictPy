@@ -36,6 +36,7 @@ import numpy as np # NumPy statistical package
 #import scipy as sp # SciPy package for statistical analysis
 import scipy.cluster.hierarchy as hier # Methods testing
 import networkx as nx # Network statistical package for centrality
+import matplotlib.pyplot as plt # The Dark Lord hears our prayer and is pleased
 
 '''
 Data output - Defines output behavior
@@ -66,6 +67,14 @@ def main():
         StdDataRanking(initial_frames[label], 1, label)
         WGCNA(initial_frames[label], label)
 
+    '''
+    Centrality analysis
+    Saves a CSV for each centrality method
+    '''
+    CentralityEigen(initial_frames["sheet_2014"], "pH", "sample number", "sheet_2014")
+    CentralityDegree(initial_frames["sheet_2014"], "pH", "sample number", "sheet_2014")
+    CentralityClose(initial_frames["sheet_2014"], "pH", "sample number", "sheet_2014")
+    CentralityBtwn(initial_frames["sheet_2014"], "pH", "sample number", "sheet_2014")
 
     '''
     Statistics on Explanatory Factors
@@ -98,12 +107,12 @@ def importSheetsToFrames(excel_filename):
     sheet_16S_2014_OTU = excel_file.parse("16S_2014_OTU")
     sheet_16S_2016_OTU = excel_file.parse("16S_2016_OTU")
     # Make dictionary of initially imported DataFrames
-    import_frames = {"sheet_2014"           : sheet_2014,
-                      "sheet_2016"          : sheet_2016,
-                      "sheet_OTU_abundance" : sheet_OTU_abundance,
-                      "sheet_2016_2014"     : sheet_2016_2014,
-                      "sheet_16S_2014_OTU"  : sheet_16S_2014_OTU,
-                      "sheet_16S_2016_OTU"  : sheet_16S_2016_OTU,
+    import_frames = {"sheet_2014"          : sheet_2014,
+                     "sheet_2016"          : sheet_2016,
+                     "sheet_OTU_abundance" : sheet_OTU_abundance,
+                     "sheet_2016_2014"     : sheet_2016_2014,
+                     "sheet_16S_2014_OTU"  : sheet_16S_2014_OTU,
+                     "sheet_16S_2016_OTU"  : sheet_16S_2016_OTU,
                      }
     return import_frames
     
@@ -217,7 +226,10 @@ def ClusteringLinkage(data_frame):
     print "\nValidity of clustering linkage: " + cluster_linkage_validity + "\n"
 
     # Return the linkage if valid
-    if(cluster_linkage_validity == True): return cluster_linkage
+    if cluster_linkage_validity == True:
+        return cluster_linkage
+    else:
+        return None
 
 def ClusteringSingle(data_frame):
     # Nearest linkage on the condensed distance matrix
@@ -244,38 +256,67 @@ def ClusteringAverage(data_frame):
 Centrality
 Measure of influence of a node in a network.
 '''
-def CentralityEigen(data_frame, source, target):
+def CentralityEigen(data_frame, source, target, name):
     # Create a NetworkX graph
     G = nx.from_pandas_dataframe(data_frame, source, target, True)
 
     # Use network x and numpy to measure node centrality
     # Measure of influence of a node
     eigen_centrality = nx.eigenvector_centrality_numpy(G)
-    print eigen_centrality
 
-def CentralityDegree(data_frame, source, target):
+    #print eigen_centrality
+    
+    # save a data frame of eigencentrality
+    df_eigen_centrality = pd.DataFrame.from_dict(data=eigen_centrality, orient='index')
+    df_eigen_centrality.to_csv(OUTPUT_DIR + "eigen_centrality_" + name)
+
+def CentralityDegree(data_frame, source, target, name):
     # Create a NetworkX graph
     G = nx.from_pandas_dataframe(data_frame, source, target, True)
+    
+    
 
     # Number of ties a node has to another node
     degree_centrality = nx.degree_centrality(G)
-    print degree_centrality
+    #print degree_centrality
+    
+    # save a data frame of degree centrality
+    df_degree_centrality = pd.DataFrame.from_dict(data=degree_centrality, orient='index')
+    df_degree_centrality.to_csv(OUTPUT_DIR + "degree_centrality_" + name)
 
-def CentralityClose(data_frame, source, target):
+def CentralityClose(data_frame, source, target, name):
     # Create a NetworkX graph
     G = nx.from_pandas_dataframe(data_frame, source, target, True)
 
     # Sum of the shortest path lengths from a node to all other nodes
     closeness_centrality = nx.closeness_centrality(G)
-    print closeness_centrality
+    #print closeness_centrality
 
-def CentralityBtwn(data_frame, source, target):
+    # Create graph and save as image
+    nx.draw(G)
+    nx.draw_random(G)
+    nx.draw_circular(G)
+    nx.draw_spectral(G)
+    png_fname = OUTPUT_DIR + "networkx_graph_" + name + ".png"
+    plt.savefig(png_fname)
+    
+    # save a data frame of closeness centrality
+    df_closeness_centrality = pd.DataFrame.from_dict(data=closeness_centrality, orient='index')
+    df_closeness_centrality.to_csv(OUTPUT_DIR + "closeness_centrality_" + name)
+
+def CentralityBtwn(data_frame, source, target, name):
     # Create a NetworkX graph
     G = nx.from_pandas_dataframe(data_frame, source, target, True)
+    
 
     # Measure of centrality based on shortest paths
     betweenness_centrality = nx.betweenness_centrality(G)
-    print betweenness_centrality
+
+    #print betweenness_centrality
+    
+     # save a data frame of betweenness centrality
+    df_betweenness_centrality = pd.DataFrame.from_dict(data=betweenness_centrality, orient='index')
+    df_betweenness_centrality.to_csv(OUTPUT_DIR + "betweenness_centrality_" + name)
     
 # Initiate the main function and prevent the others from running without being
 # called
