@@ -1,11 +1,11 @@
-import pandas as pd
+import pandas as pd # Necessary to handle dataframes
 
 
 class Dataset:
 
     def __init__(self, name, source):
-        """ Initialize Dataset
-
+        """ 
+        Initialize Dataset
 
         Keyword arguments:
         name -- String describing the Dataset
@@ -16,7 +16,8 @@ class Dataset:
         self.stats = {}
 
     def addStats(self, label, frame):
-        """ Add DataFrame of statistics to self.stats
+        """ 
+        Add DataFrame of statistics to self.stats
 
         Keyword arguments:
         label -- not String, just simple name for data computed
@@ -31,13 +32,13 @@ class Dataset:
             print self.stats[label]
 
     def statsToCSV(self, output_dir):
-        """ Save all statistics as CSV files in the format:
+        """ 
+        Save all statistics as CSV files in the format:
                 name_of_dataframe_name_of_dataset
-
 
         Keyword arguments:
         output_dir -- String of the data output directory
         """
         for label in self.stats:
-            filename = output_dir + label + "_" + self.name
+            filename = "%s%s_%s" % (output_dir, label, self.name)
             self.stats[label].to_csv(filename)

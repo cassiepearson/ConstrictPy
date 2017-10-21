@@ -12,7 +12,8 @@ as needed could generalize the functionality if needed for alternative data sets
 
 Modifications for generalization into tool (next step):
     //TODO:
-        -Rewrite everything in Python 3
+        -Rewrite everything in Python 3 - Still not widely adopted may want
+         to remain in 2.XX 
         -Prepare a formalized and breif project style guide
 
         -Port all documentation to github
@@ -32,18 +33,23 @@ For internal team reference:
 '''
 # Import all needed packages, see documentation for details
 import pandas as pd
-import numpy as np # NumPy statistical package
+import numpy as np # NumPy statistical package, needed for networkx graphs
 #import scipy as sp # SciPy package for statistical analysis
-import scipy.cluster.hierarchy as hier # Methods testing
+import scipy.cluster.hierarchy as hier # Heirarchical clustering functions
 import networkx as nx # Network statistical package for centrality
-import matplotlib.pyplot as plt # Utility for networkx graphs
-from Dataset import Dataset # Dataset.py
+#import matplotlib.pyplot as plt # Utility for networkx graphs
 
+# Import custom modules and classes
+from Dataset import Dataset # Dataset classes
+from std_corr import StdCorr, SprCorr, KtCorr # Correlation functions
+from std_stats import StdDescStats, StdDataRanking, StdCov # Descriptive stats, ranking, covariance functions
+from wgcna import WGCNA # Weighted Correlation Network Analysis
+from clustering import ClusteringLinkage, ClusteringSingle, ClusteringWeighted, ClusteringCentroid, ClusteringAverage # Clustering functions
+from centrality import CentralityEigen, CentralityDegree, CentralityClose, CentralityBtwn # Centrality functions
 
 '''
 Main function
 '''
-
 
 def main():
     '''
@@ -58,15 +64,21 @@ def main():
     Data Import
     Parse sheets of the excel data into six Dataset objects as dataset.source
     '''
+    
+    # Excel file
     excel_file = pd.ExcelFile("Prepared_Data.xlsx")
 
+    # Import excel sheets
     sheet_2014 = Dataset("sheet_2014", excel_file.parse("sample_conditions_year_2014"))
     sheet_2016 = Dataset("sheet_2016", excel_file.parse("sample_conditions_year_2016"))
     sheet_OTU_abundance = Dataset("sheet_OTU_abundance", excel_file.parse("Sorted_OTU_Abundance"))
     sheet_2016_2014 = Dataset("sheet_2016_2014", excel_file.parse("sample_conditions_2016_2014"))
     sheet_16S_2014_OTU = Dataset("sheet_16S_2014_OTU", excel_file.parse("16S_2014_OTU"))
     sheet_16S_2016_OTU = Dataset("sheet_16S_2016_OTU", excel_file.parse("16S_2016_OTU"))
+    sheet_combined_14 = Dataset("sheet_combined_14", excel_file.parse("combined_14"))
+    sheet_combined_16 = Dataset("sheet_combined_16", excel_file.parse("combined_16"))
 
+    # Create an array of imported sheets
     initial_datasets = [
         sheet_2014,
         sheet_2016,
@@ -77,17 +89,80 @@ def main():
     ]
 
     '''
-    Descriptive statistics for each sheet
+    Descriptive statistics, Ranking, WGCNA, Covariance for each sheet
     Dataframes are added to Dataset objects
     '''
-    print "Calculating Descriptive Statistics"
+    
+    # Run basic statistical analysis over all sheets in initial_dataset list
+    print "\nCalculating Descriptive Statistics, Ranking, WCGNA, and Covariance..."
     for ds in initial_datasets:
-        print "\n Analysis of " + ds.name + "\n"
-        ds.addStats("StdDescStats", StdDescStats(ds.source, ds.name))
-        ds.addStats("StdCorr", StdCorr(ds.source, ds.name))
-        ds.addStats("StdDataRanking", StdDataRanking(ds.source, 1, ds.name))
-        ds.addStats("WGCNA", WGCNA(ds.source, ds.name))
+        print "\tAnalysis of %s..." % (ds.name)
+        ds.addStats("std_desc_stats", StdDescStats(ds.source))
+        ds.addStats("std_data_ranking", StdDataRanking(ds.source))
+        ds.addStats("WGCNA", WGCNA(ds.source))
+        ds.addStats("std_cov", StdCov(ds.source))
 
+    '''
+    Correlation Analysis
+    For each sheet of data, runs four centrality analyses. Each analysis
+    is done columnwise across the dataframe.
+    '''
+    
+    # Equivalent to initial_datasets, copy made for ease of analysis change
+    corr_datasets = [
+        sheet_2014,
+        sheet_2016,
+        sheet_OTU_abundance,
+        sheet_2016_2014,
+        sheet_16S_2014_OTU,
+        sheet_16S_2016_OTU
+    ]
+
+    # List of correlation functions to be run
+    corr_functions = {
+        "std_corr" : StdCorr,
+        "spr_corr" : SprCorr,
+        "kt_corr"  : KtCorr
+    }
+
+    # Run the correlation functions in corr_functions on the corr_datasets
+    print "\nCalculating Correlation..."
+    for ds in corr_datasets:
+        print "\tAnalysis of %s..." % (ds.name)
+        for cf in corr_functions:
+            ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
+    
+    '''
+    Clustering Analysis
+    For each sheet of data, runs four centrality analyses.
+    '''
+    
+    # Equivalent to initial_datasets, copy made for ease of analysis change
+    cluster_datasets = [
+        sheet_2014,
+        sheet_2016,
+        sheet_OTU_abundance,
+        sheet_2016_2014,
+        sheet_16S_2014_OTU,
+        sheet_16S_2016_OTU
+    ]
+
+    # List of clustering functions to be run
+    cluster_functions = {
+        "clustering_linkage"  : ClusteringLinkage,
+        "clusterring_single"  : ClusteringSingle,
+        "clustering_weighted" : ClusteringWeighted,
+        "clustering_centroid" : ClusteringCentroid,
+        "clustering_average"  : ClusteringAverage
+    }
+
+    #  Run the clustering functions in clust_functions on the cluster_datasets
+    print "\nCalculating Clustering Analysis..."
+    for ds in cluster_datasets:
+        print "\tAnalysis of %s..." % (ds.name)
+        for cf in cluster_functions:
+            ds.addStats("%s" % (cf), cluster_functions[cf](ds.source))
+    
     '''
     Centrality analysis
     For each sheet of data, runs four centrality analyses. Each analysis
@@ -95,27 +170,66 @@ def main():
     analysis is between pH, Nitrate, and Phosphate.
     '''
 
-    sample_cond_datasets = [
+    # List of sheets to run the centrality functions on
+    cent_datasets = [
         sheet_2014,
         sheet_2016,
         sheet_2016_2014
     ]
 
+    # List of centrality functions to be run
     cent_functions = {
-        "eigen_centrality": CentralityEigen,
-        "degree_centrality": CentralityDegree,
-        "closeness_centrality": CentralityClose,
-        "betweenness_centrality": CentralityBtwn
+        "eigen_centrality"       : CentralityEigen,
+        "degree_centrality"      : CentralityDegree,
+        "closeness_centrality"   : CentralityClose,
+        "betweenness_centrality" : CentralityBtwn
     }
 
-
-    print "Calculating Centrality Statistics"
-    for ds in sample_cond_datasets:
-        print "\n Analysis of " + ds.name + "\n"
+    # Run the listed centrality functions on the listed sheets over three
+    # significant variables: pH, PO4P, and N03N
+    print "\nCalculating Centrality Analysis..."
+    for ds in cent_datasets:
+        print "\tAnalysis of %s..." % (ds.name)
         for cf in cent_functions:
             ds.addStats(cf + "_pH_PO4", cent_functions[cf](ds.source, "pH", "PO4P_prop"))
             ds.addStats(cf + "_pH_NO3", cent_functions[cf](ds.source, "pH", "NO3N_prop"))
             ds.addStats(cf + "_PO4_NO3", cent_functions[cf](ds.source, "PO4P_prop", "NO3N_prop"))
+
+    '''
+    Combined Analysis
+    This is for analysis of tables that combine both the OTU and viarable
+    tables. These tables are simply the transpose of the variable and OTU 
+    datasets combined and re-indexed. This allows for a cross table analysis.
+    '''
+   
+    # List of the combined datasets
+    combined_datasets = [
+        sheet_combined_14,
+        sheet_combined_16
+    ]
+    
+    # Functions that can be run on the combined datasets
+    combined_functions = {
+        "std_desc_stats"      : StdDescStats,
+        "std_ranking"         : StdDataRanking,
+        "WGCNA"               : WGCNA,
+        "std_cov"             : StdCov,
+        "std_corr"            : StdCorr,
+        "spr_corr"            : SprCorr,
+        "kt_corr"             : KtCorr,
+        "clustering_linkage"  : ClusteringLinkage,
+        "clusterring_single"  : ClusteringSingle,
+        "clustering_weighted" : ClusteringWeighted,
+        "clustering_centroid" : ClusteringCentroid,
+        "clustering_average"  : ClusteringAverage
+    }
+
+    # Run the combined functions on the combind datasets 
+    print "\nCalculating Combined Analysis..."
+    for ds in combined_datasets:
+        print "\tAnalysis of %s..." % (ds.name)
+        for cf in combined_functions:
+            ds.addStats("%s" % (cf), combined_functions[cf](ds.source))
 
     '''
     Output
@@ -126,194 +240,6 @@ def main():
     for ds in initial_datasets:
         if (VERBOSE): ds.printStats()
         ds.statsToCSV(OUTPUT_DIR)
-
-
-'''
-Pandas Descriptive Statistics
-Basic descriptive statistics on each data frame using the built in methods for
-pandas.
-'''
-
-
-def StdDescStats(data_frame, name):
-    # All optional parameters excluded
-    desc_stats = data_frame.describe()
-    return desc_stats
-
-
-'''
-Pandas Standard Statistical Correlation Methods
-Using the data frame correlation methods built into pandas. Correlation is done
-by columns, transpose for correlation by rows. This method will automatically
-exclude NA/null variables.
-'''
-
-
-def StdCorr(data_frame, name):
-    # Standard Correlation Coefficient - Pearson Correlation
-    std_corr_frame = data_frame.corr(method="pearson")
-    return std_corr_frame
-
-
-def SprCorr(data_frame, name):
-    # Spearman rank Correlation
-    sprc_corr_frame = data_frame.corr(method="spearman")
-    return sprc_corr_frame
-
-
-def KtCorr(data_frame, name):
-    # Kendall Tau Correlation
-    ktc_corr_frame = data_frame.corr(method="kendall")
-    return ktc_corr_frame
-
-
-def StdCov(data_frame, name):
-    # Standard Covariance
-    cov_frame = data_frame.cov()
-    return cov_frame
-
-
-'''
-Weighted Correlation Network Analysis
-Use the Pandas applymap to do a WGCNA on each sheet.
-'''
-
-
-def WGCNA(data_frame, name):
-    # Create the Pearson Correlation Matrix
-    wc_corr = data_frame.corr(method="pearson")
-
-    # Create the unsigned Matrix
-    wc_corr_us = wc_corr.abs()
-
-    # Create the signed matrix
-    wc_corr_s = wc_corr_us.applymap(lambda x: 0.5+0.5*x)
-
-    # Apply thresholding parameter (6 or 12 standard) to create adjacentcy matrix
-    wc_corr_adj = wc_corr_s.applymap(lambda x: x**6)
-
-    # Take the log if desired (to show the linear relation to the co-expression similarity)
-    # wc_adj_log = np.log(wc_corr_adj)
-    # print wc_adj_log
-
-    return wc_corr_adj
-
-
-'''
-Pandas Standard Data Ranking
-Compute numerical data ranks (1 through n) along provided axis.
-'''
-
-
-def StdDataRanking(data_frame, rank, name):
-    # Data Frame ranking, rank = 0 for rows, rank = 1 for columns
-    ranked_frame = data_frame.rank(rank)
-    return ranked_frame
-
-
-'''
-Clustering
-Measure of data smilarity. Hierarchical methods cluster based on distance
-between nodes. K-means will not be utilized for this analysis, but will be
-implemented in the generalized tool.
-'''
-
-
-def ClusteringLinkage(data_frame):
-    # Agglomerative clustering
-    cluster_linkage = hier.linkage(data_frame)
-    print cluster_linkage
-
-    # Check agglomerative clustering linkage validity
-    cluster_linkage_validity = hier.is_valid_linkage(cluster_linkage)
-    print "\nValidity of clustering linkage: " + cluster_linkage_validity + "\n"
-
-    # Return the linkage if valid
-    if cluster_linkage_validity is True:
-        return cluster_linkage
-    else:
-        return None
-
-
-def ClusteringSingle(data_frame):
-    # Nearest linkage on the condensed distance matrix
-    cluster_single = hier.single(data_frame)
-    print cluster_single
-
-
-def ClusteringWeighted(data_frame):
-    # WPGMA linkage on the condensed distance matrix
-    cluster_weighted = hier.weighted(data_frame)
-    print cluster_weighted
-
-
-def ClusteringCentroid(data_frame):
-    # Centroid linkage
-    cluster_centroid = hier.centroid(data_frame)
-    print cluster_centroid
-
-
-def ClusteringAverage(data_frame):
-    # Average linkage on a condensed distance matrix
-    cluster_average = hier.average(data_frame)
-    print cluster_average
-
-
-'''
-Centrality
-Measure of influence of a node in a network.
-'''
-
-
-def CentralityEigen(data_frame, source, target):
-    # Create a NetworkX graph
-    G = nx.from_pandas_dataframe(data_frame, source, target, True)
-
-    # Use network x and numpy to measure node centrality
-    # Measure of influence of a node
-    eigen_centrality = nx.eigenvector_centrality_numpy(G)
-
-    # return eigen_centrality as a DataFrame
-    df_eigen_centrality = pd.DataFrame.from_dict(data=eigen_centrality, orient='index')
-    return df_eigen_centrality
-
-
-def CentralityDegree(data_frame, source, target):
-    # Create a NetworkX graph
-    G = nx.from_pandas_dataframe(data_frame, source, target, True)
-
-    # Number of ties a node has to another node
-    degree_centrality = nx.degree_centrality(G)
-    # print degree_centrality
-
-    # return degree_centrality as a DataFrame
-    df_degree_centrality = pd.DataFrame.from_dict(data=degree_centrality, orient='index')
-    return df_degree_centrality
-
-
-def CentralityClose(data_frame, source, target):
-    # Create a NetworkX graph
-    G = nx.from_pandas_dataframe(data_frame, source, target, True)
-
-    # Sum of the shortest path lengths from a node to all other nodes
-    closeness_centrality = nx.closeness_centrality(G)
-
-    # return closeness_centrality as a DataFrame
-    df_closeness_centrality = pd.DataFrame.from_dict(data=closeness_centrality, orient='index')
-    return df_closeness_centrality
-
-
-def CentralityBtwn(data_frame, source, target):
-    # Create a NetworkX graph
-    G = nx.from_pandas_dataframe(data_frame, source, target, True)
-
-    # Measure of centrality based on shortest paths
-    betweenness_centrality = nx.betweenness_centrality(G)
-
-    # return betweenness_centrality as a DataFrame
-    df_betweenness_centrality = pd.DataFrame.from_dict(data=betweenness_centrality, orient='index')
-    return df_betweenness_centrality
-
 
 # Initiate the main function and prevent the others from running without being
 # called
