@@ -6,7 +6,7 @@ Github:         cnegrich, ahoetker, cejohn32
 
 Date Created:   September 27, 2017
 Language Used:  Python 2.7.13
-Packages Used:  Pandas, NumPy, NetworkX, SciPy
+Packages Used:  Pandas, NumPy, NetworkX, SciPy, matplotlib
 
 Basic pip commands for install:
   For Linux/Unix based Users:
