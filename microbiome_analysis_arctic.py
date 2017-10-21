@@ -120,7 +120,6 @@ def StdDescStats(data_frame, name):
     desc_stats.to_csv(filename)
     print "\nDescriptive Statistics: \n"
     print desc_stats
-    return desc_stats
 
 '''
 Pandas Standard Statistical Correlation Methods
@@ -135,7 +134,6 @@ def StdCorr(data_frame, name):
     std_corr_frame.to_csv(filename)
     print "\nStandard Correlation: \n"
     print std_corr_frame
-    return std_corr_frame
 
 def SprCorr(data_frame, name):
     # Spearman rank Correlation
@@ -144,7 +142,6 @@ def SprCorr(data_frame, name):
     sprc_corr_frame.to_csv(filename)
     print "\nSpearman Correlation: \n"
     print sprc_corr_frame
-    return sprc_corr_frame
 
 def KtCorr(data_frame, name):
     # Kendall Tau Correlation
@@ -153,7 +150,6 @@ def KtCorr(data_frame, name):
     ktc_corr_frame.to_csv(filename)
     print "\nKendall Tau Correlation: \n"
     print ktc_corr_frame
-    return ktc_corr_frame
 
 def StdCov(data_frame, name):
     # Standard Covariance
@@ -162,7 +158,6 @@ def StdCov(data_frame, name):
     cov_frame.to_csv(filename)
     print "\nPairwise Covariance: \n"
     print cov_frame
-    return cov_frame
 
 '''
 Weighted Correlation Network Analysis
@@ -191,7 +186,7 @@ def WGCNA(data_frame, name):
 
     print '\nWeighted Correlation Network Analysis Matrix:\n'
     print wc_corr_adj
-    return wc_corr_adj
+
 
 '''
 Pandas Standard Data Ranking
@@ -204,7 +199,6 @@ def StdDataRanking(data_frame, rank, name):
     ranked_frame.to_csv(filename)
     print "\nData Frame Ranking: \n"
     print ranked_frame
-    return ranked_frame
 
 
 '''
@@ -229,25 +223,22 @@ def ClusteringSingle(data_frame):
     # Nearest linkage on the condensed distance matrix
     cluster_single = hier.single(data_frame)
     print cluster_single
-    return cluster_single
 
 def ClusteringWeighted(data_frame):
     # WPGMA linkage on the condensed distance matrix
     cluster_weighted = hier.weighted(data_frame)
     print cluster_weighted
-    return cluster_weighted
+
 
 def ClusteringCentroid(data_frame):
     # Centroid linkage
     cluster_centroid = hier.centroid(data_frame)
     print cluster_centroid
-    return cluster_centroid
 
 def ClusteringAverage(data_frame):
     # Average linkage on a condensed distance matrix
     cluster_average = hier.average(data_frame)
     print cluster_average
-    return cluster_average
 
 '''
 Centrality
@@ -261,7 +252,6 @@ def CentralityEigen(data_frame, source, target):
     # Measure of influence of a node
     eigen_centrality = nx.eigenvector_centrality_numpy(G)
     print eigen_centrality
-    return eigen_centrality
 
 def CentralityDegree(data_frame, source, target):
     # Create a NetworkX graph
@@ -270,7 +260,6 @@ def CentralityDegree(data_frame, source, target):
     # Number of ties a node has to another node
     degree_centrality = nx.degree_centrality(G)
     print degree_centrality
-    return degree_centrality
 
 def CentralityClose(data_frame, source, target):
     # Create a NetworkX graph
@@ -279,7 +268,6 @@ def CentralityClose(data_frame, source, target):
     # Sum of the shortest path lengths from a node to all other nodes
     closeness_centrality = nx.closeness_centrality(G)
     print closeness_centrality
-    return closeness_centrality
 
 def CentralityBtwn(data_frame, source, target):
     # Create a NetworkX graph
@@ -288,8 +276,7 @@ def CentralityBtwn(data_frame, source, target):
     # Measure of centrality based on shortest paths
     betweenness_centrality = nx.betweenness_centrality(G)
     print betweenness_centrality
-    return betweenness_centrality
-
+    
 # Initiate the main function and prevent the others from running without being
 # called
 if __name__ == '__main__':
