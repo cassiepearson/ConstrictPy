@@ -56,9 +56,9 @@ def main():
     initial_frames = importSheetsToFrames("Prepared_Data.xlsx")
 
     '''
-    Analysis of all data within each sheet
+    Descriptive statistics for each sheet
+    All dataframes are exported to CSV
     '''
-    # ***Needs to be altered to handle returns and new function names
     print "Analysis of data within each sheet:\n"
     for label in initial_frames:
         print "\nAnalysis of " + label + "\n"
@@ -69,12 +69,30 @@ def main():
 
     '''
     Centrality analysis
-    Saves a CSV for each centrality method
+    For each sheet of data, runs four centrality analyses. Each analysis
+    is between two of three columns, for a total of 12 analyses per sheet. The
+    analysis is between pH, Nitrate, and Phosphate. 
     '''
-    CentralityEigen(initial_frames["sheet_2014"], "pH", "sample number", "sheet_2014")
-    CentralityDegree(initial_frames["sheet_2014"], "pH", "sample number", "sheet_2014")
-    CentralityClose(initial_frames["sheet_2014"], "pH", "sample number", "sheet_2014")
-    CentralityBtwn(initial_frames["sheet_2014"], "pH", "sample number", "sheet_2014")
+    
+    sample_cond_frames = [
+                        "sheet_2014",
+                        "sheet_2016",
+                        "sheet_2016_2014"
+                          ]
+    
+    centrality_functions = [
+                            CentralityEigen, 
+                            CentralityDegree, 
+                            CentralityClose,
+                            CentralityBtwn
+                            ]
+    
+    for label in sample_cond_frames:
+        for cf in centrality_functions:
+            cf(initial_frames[label], "pH", "PO4P_prop", label + "_pH_PO4")
+            cf(initial_frames[label], "pH", "NO3N_prop", label + "_pH_NO3")
+            cf(initial_frames[label], "PO4P_prop", "NO3N_prop", label + "_PO4_NO3")
+
 
     '''
     Statistics on Explanatory Factors
@@ -103,7 +121,7 @@ def importSheetsToFrames(excel_filename):
     sheet_2014 = excel_file.parse("sample_conditions_year_2014")
     sheet_2016 = excel_file.parse("sample_conditions_year_2016")
     sheet_OTU_abundance = excel_file.parse("Sorted_OTU_Abundance")
-    sheet_2016_2014 = excel_file.parse("sample_conditions_year_2016_2014")
+    sheet_2016_2014 = excel_file.parse("sample_conditions_2016_2014")
     sheet_16S_2014_OTU = excel_file.parse("16S_2014_OTU")
     sheet_16S_2016_OTU = excel_file.parse("16S_2016_OTU")
     # Make dictionary of initially imported DataFrames
@@ -292,13 +310,13 @@ def CentralityClose(data_frame, source, target, name):
     closeness_centrality = nx.closeness_centrality(G)
     #print closeness_centrality
 
-    # Create graph and save as image
-    nx.draw(G)
-    nx.draw_random(G)
-    nx.draw_circular(G)
-    nx.draw_spectral(G)
-    png_fname = OUTPUT_DIR + "networkx_graph_" + name + ".png"
-    plt.savefig(png_fname)
+#    # Create graph and save as image
+#    nx.draw(G)
+#    nx.draw_random(G)
+#    nx.draw_circular(G)
+#    nx.draw_spectral(G)
+#    png_fname = OUTPUT_DIR + "networkx_graph_" + name + ".png"
+#    plt.savefig(png_fname)
     
     # save a data frame of closeness centrality
     df_closeness_centrality = pd.DataFrame.from_dict(data=closeness_centrality, orient='index')
