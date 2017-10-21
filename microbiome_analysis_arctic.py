@@ -34,14 +34,14 @@ For internal team reference:
 import pandas as pd
 import numpy as np # NumPy statistical package
 #import scipy as sp # SciPy package for statistical analysis
-import scipy.cluster.hierarchy as hier # Wild card imported for methods testing
-import networkx as nx
+import scipy.cluster.hierarchy as hier # Methods testing
+import networkx as nx # Network statistical package for centrality
 
 '''
 Data output - Defines output behavior
 '''
 # Define output directory
-output_dir = "output-files/"
+OUTPUT_DIR = "output-files/"
 
 
 '''
@@ -49,30 +49,14 @@ Main function
 '''
 def main():
     '''
-    Data import - Originally was separated function, hard coded for convience
+    Data import
+    Once again, this is just calling a function with hardcoded values
     '''
-    # Load spreadsheet
-    excel_file = pd.ExcelFile("Prepared_Data.xlsx")
-    # Load each sheet into a separate dataframe
-    sheet_2014 = excel_file.parse("sample_conditions_year_2014")
-    sheet_2016 = excel_file.parse("sample_conditions_year_2016")
-    sheet_OTU_abundance = excel_file.parse("Sorted_OTU_Abundance")
-    sheet_2016_2014 = excel_file.parse("sample_conditions_year_2016_2014")
-    sheet_16S_2014_OTU = excel_file.parse("16S_2014_OTU")
-    sheet_16S_2016_OTU = excel_file.parse("16S_2016_OTU")
-
+    initial_frames = importSheetsToFrames("Prepared_Data.xlsx")
 
     '''
     Analysis of all data within each sheet
     '''
-    initial_frames = {"sheet_2014"          : sheet_2014,
-                      "sheet_2016"          : sheet_2016,
-                      "sheet_OTU_abundance" : sheet_OTU_abundance,
-                      "sheet_2016_2014"     : sheet_2016_2014,
-                      "sheet_16S_2014_OTU"  : sheet_16S_2014_OTU,
-                      "sheet_16S_2016_OTU"  : sheet_16S_2016_OTU,
-                     }
-
     # ***Needs to be altered to handle returns and new function names
     print "Analysis of data within each sheet:\n"
     for label in initial_frames:
@@ -96,6 +80,33 @@ def main():
     #print "pH variance: " + str(pH_2016_var)
     #print "NO2-N variance: " + str(NO2_2016_var)
     #print "NO2-N, pH covariance: " + str(pH_NO2_2016_cov)
+    
+    
+'''
+Import Function
+Basically just a macro
+'''
+def importSheetsToFrames(excel_filename):
+    # Load spreadsheet
+    excel_file = pd.ExcelFile(str(excel_filename))
+    # Load each sheet into a separate dataframe
+    sheet_2014 = excel_file.parse("sample_conditions_year_2014")
+    sheet_2014 = excel_file.parse("sample_conditions_year_2014")
+    sheet_2016 = excel_file.parse("sample_conditions_year_2016")
+    sheet_OTU_abundance = excel_file.parse("Sorted_OTU_Abundance")
+    sheet_2016_2014 = excel_file.parse("sample_conditions_year_2016_2014")
+    sheet_16S_2014_OTU = excel_file.parse("16S_2014_OTU")
+    sheet_16S_2016_OTU = excel_file.parse("16S_2016_OTU")
+    # Make dictionary of initially imported DataFrames
+    import_frames = {"sheet_2014"           : sheet_2014,
+                      "sheet_2016"          : sheet_2016,
+                      "sheet_OTU_abundance" : sheet_OTU_abundance,
+                      "sheet_2016_2014"     : sheet_2016_2014,
+                      "sheet_16S_2014_OTU"  : sheet_16S_2014_OTU,
+                      "sheet_16S_2016_OTU"  : sheet_16S_2016_OTU,
+                     }
+    return import_frames
+    
 
 '''
 Pandas Descriptive Statistics
@@ -105,7 +116,7 @@ pandas.
 def StdDescStats(data_frame, name):
     # All optional parameters excluded
     desc_stats = data_frame.describe()
-    filename = output_dir + "desc_stats_" + name
+    filename = OUTPUT_DIR + "desc_stats_" + name
     desc_stats.to_csv(filename)
     print "\nDescriptive Statistics: \n"
     print desc_stats
@@ -120,7 +131,7 @@ exclude NA/null variables.
 def StdCorr(data_frame, name):
     # Standard Correlation Coefficient - Pearson Correlation
     std_corr_frame = data_frame.corr(method="pearson")
-    filename = output_dir + "std_corr_frame_" + name
+    filename = OUTPUT_DIR + "std_corr_frame_" + name
     std_corr_frame.to_csv(filename)
     print "\nStandard Correlation: \n"
     print std_corr_frame
@@ -129,7 +140,7 @@ def StdCorr(data_frame, name):
 def SprCorr(data_frame, name):
     # Spearman rank Correlation
     sprc_corr_frame = data_frame.corr(method="spearman")
-    filename = output_dir + "sprc_corr_frame_" + name
+    filename = OUTPUT_DIR + "sprc_corr_frame_" + name
     sprc_corr_frame.to_csv(filename)
     print "\nSpearman Correlation: \n"
     print sprc_corr_frame
@@ -138,7 +149,7 @@ def SprCorr(data_frame, name):
 def KtCorr(data_frame, name):
     # Kendall Tau Correlation
     ktc_corr_frame = data_frame.corr(method="kendall")
-    filename = output_dir + "ktc_corr_frame_" + name
+    filename = OUTPUT_DIR + "ktc_corr_frame_" + name
     ktc_corr_frame.to_csv(filename)
     print "\nKendall Tau Correlation: \n"
     print ktc_corr_frame
@@ -147,7 +158,7 @@ def KtCorr(data_frame, name):
 def StdCov(data_frame, name):
     # Standard Covariance
     cov_frame = data_frame.cov()
-    filename = output_dir + "cov_frame_" + name
+    filename = OUTPUT_DIR + "cov_frame_" + name
     cov_frame.to_csv(filename)
     print "\nPairwise Covariance: \n"
     print cov_frame
@@ -175,7 +186,7 @@ def WGCNA(data_frame, name):
     #print wc_adj_log
 
     # Export to csv
-    filename = output_dir + "wc_corr_adj_" + name
+    filename = OUTPUT_DIR + "wc_corr_adj_" + name
     wc_corr_adj.to_csv(filename)
 
     print '\nWeighted Correlation Network Analysis Matrix:\n'
@@ -189,7 +200,7 @@ Compute numerical data ranks (1 through n) along provided axis.
 def StdDataRanking(data_frame, rank, name):
     # Data Frame ranking, rank = 0 for rows, rank = 1 for columns
     ranked_frame = data_frame.rank(rank)
-    filename = output_dir + "ranked_frame_" + name
+    filename = OUTPUT_DIR + "ranked_frame_" + name
     ranked_frame.to_csv(filename)
     print "\nData Frame Ranking: \n"
     print ranked_frame
