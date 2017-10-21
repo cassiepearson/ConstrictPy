@@ -1,6 +1,4 @@
-output-files/
+output-files
+*.pyc
 .DS_Store
-testing-plsda.py
-test-plsda.csv
-learn-networkx.py
 
