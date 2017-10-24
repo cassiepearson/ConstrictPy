@@ -85,7 +85,9 @@ def main():
         sheet_OTU_abundance,
         sheet_2016_2014,
         sheet_16S_2014_OTU,
-        sheet_16S_2016_OTU
+        sheet_16S_2016_OTU,
+        sheet_combined_14,
+        sheet_combined_16
     ]
 
     '''
@@ -240,10 +242,7 @@ def main():
     for ds in initial_datasets:
         if (VERBOSE): ds.printStats()
         ds.statsToCSV(OUTPUT_DIR)
-        
-    for ds in combined_datasets:
-        if (VERBOSE): ds.printStats()
-        ds.statsToCSV(OUTPUT_DIR)
+
 
 # Initiate the main function and prevent the others from running without being
 # called
