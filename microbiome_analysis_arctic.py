@@ -150,7 +150,7 @@ def main():
     # List of clustering functions to be run
     cluster_functions = {
         "clustering_linkage"  : ClusteringLinkage,
-        "clusterring_single"  : ClusteringSingle,
+        "clustering_single"  : ClusteringSingle,
         "clustering_weighted" : ClusteringWeighted,
         "clustering_centroid" : ClusteringCentroid,
         "clustering_average"  : ClusteringAverage
@@ -229,7 +229,7 @@ def main():
     for ds in combined_datasets:
         print "\tAnalysis of %s..." % (ds.name)
         for cf in combined_functions:
-            ds.addStats("%s" % (cf), combined_functions[cf](ds.source))
+            ds.addStats(cf, combined_functions[cf](ds.source))
 
     '''
     Output
@@ -238,6 +238,10 @@ def main():
     '''
 
     for ds in initial_datasets:
+        if (VERBOSE): ds.printStats()
+        ds.statsToCSV(OUTPUT_DIR)
+        
+    for ds in combined_datasets:
         if (VERBOSE): ds.printStats()
         ds.statsToCSV(OUTPUT_DIR)
 
