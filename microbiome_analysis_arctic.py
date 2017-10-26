@@ -46,7 +46,7 @@ from std_stats import StdDescStats, StdDataRanking, StdCov # Descriptive stats, 
 from wgcna import WGCNA # Weighted Correlation Network Analysis
 from clustering import ClusteringLinkage, ClusteringSingle, ClusteringWeighted, ClusteringCentroid, ClusteringAverage # Clustering functions
 from centrality import CentralityEigen, CentralityDegree, CentralityClose, CentralityBtwn # Centrality functions
-from io_handling import clearDir, ensureDir, writeOutToCSV
+from io_handling import clearDir, ensureDir, writeOutToCSV, writeOutToRdata
 
 '''
 Main function
@@ -60,7 +60,8 @@ def main():
     Choose whether to print stats summary to console
     '''
     OUTPUT_DIR = "output-files/" # Define the output directory
-    RESET_OUTPUT = True # Clear OUTPUT_DIR before file output
+    R_DIR = "r-data-objects/"  # Define the R data object directory
+    RESET_OUTPUT = True # Clear OUTPUT_DIR and R_DIR before file output
     VERBOSE = False # Print DataFrames to console during file output
 
     '''
@@ -244,12 +245,21 @@ def main():
     Output all data as labelled CSV to OUTPUT_DIR
     '''
     
+    # CSV stuff
     ensureDir(OUTPUT_DIR)
     if RESET_OUTPUT: clearDir(OUTPUT_DIR)
 
     for ds in initial_datasets:
         if (VERBOSE): ds.printStats()
         writeOutToCSV(OUTPUT_DIR, ds)
+        
+    # R stuff
+    ensureDir(R_DIR)
+    if RESET_OUTPUT: clearDir(R_DIR)
+    
+    for ds in initial_datasets:
+        writeOutToRdata(R_DIR, ds)
+    
 
 
 # Initiate the main function and prevent the others from running without being

@@ -13,7 +13,7 @@ class Dataset:
         """
         self.name = name
         self.source = source
-        self.stats = {}
+        self.stats = {"source" : self.source,}
 
     def addStats(self, label, frame):
         """ 

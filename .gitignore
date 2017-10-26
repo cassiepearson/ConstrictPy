@@ -1,5 +1,7 @@
 output-files
 output-files/**
+r-data-objects
+r-data-objects/**
 *.pyc
 .DS_Store
 
