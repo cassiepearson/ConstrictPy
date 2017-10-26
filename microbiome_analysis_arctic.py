@@ -46,6 +46,7 @@ from std_stats import StdDescStats, StdDataRanking, StdCov # Descriptive stats, 
 from wgcna import WGCNA # Weighted Correlation Network Analysis
 from clustering import ClusteringLinkage, ClusteringSingle, ClusteringWeighted, ClusteringCentroid, ClusteringAverage # Clustering functions
 from centrality import CentralityEigen, CentralityDegree, CentralityClose, CentralityBtwn # Centrality functions
+from io_handling import clearDir, ensureDir, writeOutToCSV
 
 '''
 Main function
@@ -55,10 +56,12 @@ def main():
     '''
     Define Constants
     Set the output directory
+    Choose whether to reset the output directory
     Choose whether to print stats summary to console
     '''
-    OUTPUT_DIR = "output-files/"
-    VERBOSE = False
+    OUTPUT_DIR = "output-files/" # Define the output directory
+    RESET_OUTPUT = True # Clear OUTPUT_DIR before file output
+    VERBOSE = False # Print DataFrames to console during file output
 
     '''
     Data Import
@@ -235,13 +238,18 @@ def main():
 
     '''
     Output
+    Create OUTPUT_DIR if it does not exist
+    Clear OUTPUT_DIR
     Print computed data for each dataset to the console
     Output all data as labelled CSV to OUTPUT_DIR
     '''
+    
+    ensureDir(OUTPUT_DIR)
+    if RESET_OUTPUT: clearDir(OUTPUT_DIR)
 
     for ds in initial_datasets:
         if (VERBOSE): ds.printStats()
-        ds.statsToCSV(OUTPUT_DIR)
+        writeOutToCSV(OUTPUT_DIR, ds)
 
 
 # Initiate the main function and prevent the others from running without being
