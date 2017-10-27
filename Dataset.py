@@ -1,10 +1,10 @@
-import pandas as pd # Necessary to handle dataframes
+import pandas as pd  # Necessary to handle dataframes
 
 
 class Dataset:
 
     def __init__(self, name, source):
-        """ 
+        """
         Initialize Dataset
 
         Keyword arguments:
@@ -13,10 +13,10 @@ class Dataset:
         """
         self.name = name
         self.source = source
-        self.stats = {"source" : self.source,}
+        self.stats = {"source": self.source, }
 
     def addStats(self, label, frame):
-        """ 
+        """
         Add DataFrame of statistics to self.stats
 
         Keyword arguments:
@@ -32,7 +32,7 @@ class Dataset:
             print self.stats[label]
 
     def statsToCSV(self, output_dir):
-        """ 
+        """
         DEPRECATED IN FAVOR OF io_handling FUNCTION AND Dataset.getStats
         Save all statistics as CSV files in the format:
                 name_of_dataframe_name_of_dataset
@@ -43,11 +43,11 @@ class Dataset:
         for label in self.stats:
             filename = "%s%s_%s%s" % (output_dir, label, self.name, '.csv')
             self.stats[label].to_csv(filename)
-    
+
     def getStats(self):
         """
         Return dict of DataFrames in self.stats with _sheetname added
-        
+
         This is mainly intended to feed to a file output function
         """
         stats_out = {}
@@ -55,5 +55,3 @@ class Dataset:
             full_name = "%s_%s" % (label, self.name)
             stats_out[full_name] = self.stats[label]
         return stats_out
-            
-    

@@ -8,12 +8,13 @@ Last Updated: October 2017
 
 This program is designed to allow for a variety of similar data sets to be
 analyzed. Modifying the main function and splitting the rest into module(s)
-as needed could generalize the functionality if needed for alternative data sets.
+as needed could generalize the functionality if needed for alternative data
+sets.
 
 Modifications for generalization into tool (next step):
     //TODO:
         -Rewrite everything in Python 3 - Still not widely adopted may want
-         to remain in 2.XX 
+         to remain in 2.XX
         -Prepare a formalized and breif project style guide
 
         -Port all documentation to github
@@ -33,24 +34,45 @@ For internal team reference:
 '''
 # Import all needed packages, see documentation for details
 import pandas as pd
-import numpy as np # NumPy statistical package, needed for networkx graphs
-#import scipy as sp # SciPy package for statistical analysis
-import scipy.cluster.hierarchy as hier # Heirarchical clustering functions
-import networkx as nx # Network statistical package for centrality
-#import matplotlib.pyplot as plt # Utility for networkx graphs
+import numpy as np  # NumPy statistical package, needed for networkx graphs
+import scipy.cluster.hierarchy as hier  # Heirarchical clustering functions
+import networkx as nx  # Network statistical package for centrality
 
 # Import custom modules and classes
-from Dataset import Dataset # Dataset classes
-from std_corr import StdCorr, SprCorr, KtCorr # Correlation functions
-from std_stats import StdDescStats, StdDataRanking, StdCov # Descriptive stats, ranking, covariance functions
-from wgcna import WGCNA # Weighted Correlation Network Analysis
-from clustering import ClusteringLinkage, ClusteringSingle, ClusteringWeighted, ClusteringCentroid, ClusteringAverage # Clustering functions
-from centrality import CentralityEigen, CentralityDegree, CentralityClose, CentralityBtwn # Centrality functions
-from io_handling import ensureDir, batchSaveToFile
+from Dataset import Dataset  # Dataset classes
+from std_corr import (  # Correlation functions
+    StdCorr,
+    SprCorr,
+    KtCorr,
+)
+from std_stats import (  # Descriptive stats, ranking, covariance functions
+    StdDescStats,
+    StdDataRanking,
+    StdCov,
+)
+from wgcna import WGCNA  # Weighted Correlation Network Analysis
+from clustering import (  # Clustering functions
+    ClusteringLinkage,
+    ClusteringSingle,
+    ClusteringWeighted,
+    ClusteringCentroid,
+    ClusteringAverage,
+)
+from centrality import (  # Centrality functions
+    CentralityEigen,
+    CentralityDegree,
+    CentralityClose,
+    CentralityBtwn,
+)
+from io_handling import (
+    ensureDir,
+    batchSaveToFile,
+)
 
 '''
 Main function
 '''
+
 
 def main():
     '''
@@ -59,17 +81,17 @@ def main():
     Choose whether to reset the output directory
     Choose whether to print stats summary to console
     '''
-    VERBOSE = False # Print DataFrames to console during file output
-    OUTPUT_DIR = "output-files/" # Define the output directory
+    VERBOSE = False  # Print DataFrames to console during file output
+    OUTPUT_DIR = "output-files/"  # Define the output directory
     CSV_DIR = OUTPUT_DIR + "csv/"  # Define the CSV data directory
-    R_DIR = OUTPUT_DIR + "r-data-objects/"  # Define the R data object directory
-    CLEAR_OUTPUT = True # Clear output directories before saving files
-    
+    R_DIR = OUTPUT_DIR + "r-data-objects/"  # Define the R data directory
+    CLEAR_OUTPUT = True  # Clear output directories before saving files
+
     '''
     Data Import
     Parse sheets of the excel data into six Dataset objects as dataset.source
     '''
-    
+
     # Excel file
     excel_file = pd.ExcelFile("Prepared_Data.xlsx")
 
@@ -99,7 +121,7 @@ def main():
     Descriptive statistics, Ranking, WGCNA, Covariance for each sheet
     Dataframes are added to Dataset objects
     '''
-    
+
     # Run basic statistical analysis over all sheets in initial_dataset list
     print "\nCalculating Descriptive Statistics, Ranking, WCGNA, and Covariance..."
     for ds in initial_datasets:
@@ -114,7 +136,7 @@ def main():
     For each sheet of data, runs four centrality analyses. Each analysis
     is done columnwise across the dataframe.
     '''
-    
+
     # Equivalent to initial_datasets, copy made for ease of analysis change
     corr_datasets = [
         sheet_2014,
@@ -127,9 +149,9 @@ def main():
 
     # List of correlation functions to be run
     corr_functions = {
-        "std_corr" : StdCorr,
-        "spr_corr" : SprCorr,
-        "kt_corr"  : KtCorr
+        "std_corr": StdCorr,
+        "spr_corr": SprCorr,
+        "kt_corr": KtCorr,
     }
 
     # Run the correlation functions in corr_functions on the corr_datasets
@@ -138,12 +160,12 @@ def main():
         print "\tAnalysis of %s..." % (ds.name)
         for cf in corr_functions:
             ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
-    
+
     '''
     Clustering Analysis
     For each sheet of data, runs four centrality analyses.
     '''
-    
+
     # Equivalent to initial_datasets, copy made for ease of analysis change
     cluster_datasets = [
         sheet_2014,
@@ -156,11 +178,11 @@ def main():
 
     # List of clustering functions to be run
     cluster_functions = {
-        "clustering_linkage"  : ClusteringLinkage,
-        "clustering_single"  : ClusteringSingle,
-        "clustering_weighted" : ClusteringWeighted,
-        "clustering_centroid" : ClusteringCentroid,
-        "clustering_average"  : ClusteringAverage
+        "clustering_linkage": ClusteringLinkage,
+        "clustering_single": ClusteringSingle,
+        "clustering_weighted": ClusteringWeighted,
+        "clustering_centroid": ClusteringCentroid,
+        "clustering_average": ClusteringAverage
     }
 
     #  Run the clustering functions in clust_functions on the cluster_datasets
@@ -169,7 +191,7 @@ def main():
         print "\tAnalysis of %s..." % (ds.name)
         for cf in cluster_functions:
             ds.addStats("%s" % (cf), cluster_functions[cf](ds.source))
-    
+
     '''
     Centrality analysis
     For each sheet of data, runs four centrality analyses. Each analysis
@@ -186,10 +208,10 @@ def main():
 
     # List of centrality functions to be run
     cent_functions = {
-        "eigen_centrality"       : CentralityEigen,
-        "degree_centrality"      : CentralityDegree,
-        "closeness_centrality"   : CentralityClose,
-        "betweenness_centrality" : CentralityBtwn
+        "eigen_centrality": CentralityEigen,
+        "degree_centrality": CentralityDegree,
+        "closeness_centrality": CentralityClose,
+        "betweenness_centrality": CentralityBtwn
     }
 
     # Run the listed centrality functions on the listed sheets over three
@@ -205,33 +227,33 @@ def main():
     '''
     Combined Analysis
     This is for analysis of tables that combine both the OTU and viarable
-    tables. These tables are simply the transpose of the variable and OTU 
+    tables. These tables are simply the transpose of the variable and OTU
     datasets combined and re-indexed. This allows for a cross table analysis.
     '''
-   
+
     # List of the combined datasets
     combined_datasets = [
         sheet_combined_14,
         sheet_combined_16
     ]
-    
+
     # Functions that can be run on the combined datasets
     combined_functions = {
-        "std_desc_stats"      : StdDescStats,
-        "std_ranking"         : StdDataRanking,
-        "WGCNA"               : WGCNA,
-        "std_cov"             : StdCov,
-        "std_corr"            : StdCorr,
-        "spr_corr"            : SprCorr,
-        "kt_corr"             : KtCorr,
-        "clustering_linkage"  : ClusteringLinkage,
-        "clustering_single"   : ClusteringSingle,
-        "clustering_weighted" : ClusteringWeighted,
-        "clustering_centroid" : ClusteringCentroid,
-        "clustering_average"  : ClusteringAverage
+        "std_desc_stats": StdDescStats,
+        "std_ranking": StdDataRanking,
+        "WGCNA": WGCNA,
+        "std_cov": StdCov,
+        "std_corr": StdCorr,
+        "spr_corr": SprCorr,
+        "kt_corr": KtCorr,
+        "clustering_linkage": ClusteringLinkage,
+        "clustering_single": ClusteringSingle,
+        "clustering_weighted": ClusteringWeighted,
+        "clustering_centroid": ClusteringCentroid,
+        "clustering_average": ClusteringAverage
     }
 
-    # Run the combined functions on the combined datasets 
+    # Run the combined functions on the combined datasets
     print "\nCalculating Combined Analysis..."
     for ds in combined_datasets:
         print "\tAnalysis of %s..." % (ds.name)
@@ -240,21 +262,21 @@ def main():
 
     '''
     Output
-    
+
     Print lots of stuff to console if VERBOSE
     Make sure directories exist
     Save DataFrames to CSV files
     Save Dataframes to Rdata files
     '''
-    
+
     # Print to console
     if VERBOSE is True:
         for ds in initial_datasets:
             ds.printStats()
-            
+
     # Make sure the output directory exists
     ensureDir(OUTPUT_DIR)
-    
+
     # CSV stuff
     ensureDir(CSV_DIR)
     batchSaveToFile(CSV_DIR, initial_datasets, 'csv', clear=CLEAR_OUTPUT)
