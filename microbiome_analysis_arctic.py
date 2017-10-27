@@ -46,7 +46,7 @@ from std_stats import StdDescStats, StdDataRanking, StdCov # Descriptive stats, 
 from wgcna import WGCNA # Weighted Correlation Network Analysis
 from clustering import ClusteringLinkage, ClusteringSingle, ClusteringWeighted, ClusteringCentroid, ClusteringAverage # Clustering functions
 from centrality import CentralityEigen, CentralityDegree, CentralityClose, CentralityBtwn # Centrality functions
-from io_handling import clearDir, ensureDir, writeOutToCSV, writeOutToRdata
+from io_handling import ensureDir, batchSaveToFile
 
 '''
 Main function
@@ -55,15 +55,16 @@ Main function
 def main():
     '''
     Define Constants
-    Set the output directory
+    Set the output directories
     Choose whether to reset the output directory
     Choose whether to print stats summary to console
     '''
-    OUTPUT_DIR = "output-files/" # Define the output directory
-    R_DIR = "r-data-objects/"  # Define the R data object directory
-    RESET_OUTPUT = True # Clear OUTPUT_DIR and R_DIR before file output
     VERBOSE = False # Print DataFrames to console during file output
-
+    OUTPUT_DIR = "output-files/" # Define the output directory
+    CSV_DIR = OUTPUT_DIR + "csv/"  # Define the CSV data directory
+    R_DIR = OUTPUT_DIR + "r-data-objects/"  # Define the R data object directory
+    CLEAR_OUTPUT = True # Clear output directories before saving files
+    
     '''
     Data Import
     Parse sheets of the excel data into six Dataset objects as dataset.source
@@ -224,13 +225,13 @@ def main():
         "spr_corr"            : SprCorr,
         "kt_corr"             : KtCorr,
         "clustering_linkage"  : ClusteringLinkage,
-        "clusterring_single"  : ClusteringSingle,
+        "clustering_single"   : ClusteringSingle,
         "clustering_weighted" : ClusteringWeighted,
         "clustering_centroid" : ClusteringCentroid,
         "clustering_average"  : ClusteringAverage
     }
 
-    # Run the combined functions on the combind datasets 
+    # Run the combined functions on the combined datasets 
     print "\nCalculating Combined Analysis..."
     for ds in combined_datasets:
         print "\tAnalysis of %s..." % (ds.name)
@@ -239,27 +240,28 @@ def main():
 
     '''
     Output
-    Create OUTPUT_DIR if it does not exist
-    Clear OUTPUT_DIR
-    Print computed data for each dataset to the console
-    Output all data as labelled CSV to OUTPUT_DIR
+    
+    Print lots of stuff to console if VERBOSE
+    Make sure directories exist
+    Save DataFrames to CSV files
+    Save Dataframes to Rdata files
     '''
     
-    # CSV stuff
+    # Print to console
+    if VERBOSE is True:
+        for ds in initial_datasets:
+            ds.printStats()
+            
+    # Make sure the output directory exists
     ensureDir(OUTPUT_DIR)
-    if RESET_OUTPUT: clearDir(OUTPUT_DIR)
+    
+    # CSV stuff
+    ensureDir(CSV_DIR)
+    batchSaveToFile(CSV_DIR, initial_datasets, 'csv', clear=CLEAR_OUTPUT)
 
-    for ds in initial_datasets:
-        if (VERBOSE): ds.printStats()
-        writeOutToCSV(OUTPUT_DIR, ds)
-        
     # R stuff
     ensureDir(R_DIR)
-    if RESET_OUTPUT: clearDir(R_DIR)
-    
-    for ds in initial_datasets:
-        writeOutToRdata(R_DIR, ds)
-    
+    batchSaveToFile(R_DIR, initial_datasets, 'Rdata', clear=CLEAR_OUTPUT)
 
 
 # Initiate the main function and prevent the others from running without being

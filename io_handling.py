@@ -19,7 +19,7 @@ def ensureDir(dir_path):  # create the directory if it doesn't exist
             raise  # OK, then tell me about it.
 
 
-def writeOutToCSV(output_dir, dataset):
+def datasetToCSV(output_dir, dataset):
     """
     Takes an output directory and dataset as arguments, and puts all the
     stats in that dataset into labelled .csv files in output_dir.
@@ -31,7 +31,12 @@ def writeOutToCSV(output_dir, dataset):
         export_data[label].to_csv(file_path)
 
 
-def writeOutToRdata(output_dir, dataset):
+def datasetToRdata(output_dir, dataset):
+    """
+    Takes an output directory and dataset as arguments, converts the stats
+    in that dataset to R dataframes, then saves the R dataframes as labelled
+    R data objects in output_dir. 
+    """
     pandas2ri.activate()
     export_data = dataset.getStats()
     for label in export_data:
@@ -40,3 +45,30 @@ def writeOutToRdata(output_dir, dataset):
         r_df = pandas2ri.py2ri(export_data[label])
         robjects.r.assign(label, r_df)
         robjects.r("save(%s, file='%s')" % (label, file_path))
+        
+        
+def batchSaveToFile(output_dir, datasets, filetype, clear=False):
+    """
+    Save lots of dataframes to files. This is probably the function to call
+    in main(), instead of iterating over datasetToX. 
+    
+    Keyword arguments:
+        output_dir - output directory
+        datasets - list of Dataset objects
+        filetype - string describing desired output
+        clear - should output_dir be cleared? default False. 
+    """
+    if clear is True:
+        clearDir(output_dir)  # clear before writing new files
+
+    filetype = str.lower(str(filetype))  # quick and dirty normalization
+    
+    if filetype == "csv":
+        for dataset in datasets:
+            datasetToCSV(output_dir, dataset)
+    elif filetype == "r" or "rdata":
+        for dataset in datasets:
+            datasetToRdata(output_dir, dataset)
+    else:
+        print "%s is not an acceptable filetype (csv, r, rdata)"
+
