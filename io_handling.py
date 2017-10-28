@@ -67,7 +67,7 @@ def batchSaveToFile(output_dir, datasets, filetype, clear=False):
     if filetype == "csv":
         for dataset in datasets:
             datasetToCSV(output_dir, dataset)
-    elif filetype == "r" or "rdata":
+    elif filetype == "r" or filetype == "rdata":
         for dataset in datasets:
             datasetToRdata(output_dir, dataset)
     else:
