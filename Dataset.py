@@ -28,8 +28,8 @@ class Dataset:
     def printStats(self):
         """ Print all statistics with labels """
         for label in self.stats:
-            print label
-            print self.stats[label]
+            print(label)
+            print(self.stats[label])
 
     def statsToCSV(self, output_dir):
         """

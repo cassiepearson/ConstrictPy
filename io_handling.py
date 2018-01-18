@@ -63,19 +63,19 @@ def batchSaveToFile(output_dir, datasets, filetype, clear=False):
     if clear is True:
         clearDir(output_dir)  # clear before writing new files
         
-    print "\nSaving dataframes to %s as type %s..." % (output_dir, filetype)
+    print("\nSaving dataframes to %s as type %s..." % (output_dir, filetype))
 
     filetype = str.lower(str(filetype))  # quick and dirty normalization
 
     if filetype == "csv":
         for dataset in datasets:
-            print "\tSaving dataframes from %s..." % dataset.name
+            print("\tSaving dataframes from %s..." % dataset.name)
             datasetToCSV(output_dir, dataset)
     elif filetype == "r" or filetype == "rdata":
         for dataset in datasets:
-            print "\tSaving dataframes from %s..." % dataset.name
+            print("\tSaving dataframes from %s..." % dataset.name)
             datasetToRdata(output_dir, dataset)
     else:
-        print "\t%s is not an acceptable filetype (csv, r, rdata)" % filetype
+        print("\t%s is not an acceptable filetype (csv, r, rdata)" % filetype)
         
-    print "\tDone"    
+    print("\tDone")

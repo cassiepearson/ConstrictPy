@@ -22,26 +22,26 @@ def ClusteringLinkage(data_frame):
 
     # Check agglomerative clustering linkage validity
     cluster_linkage_validity = hier.is_valid_linkage(cluster_linkage)
-    print "\tValidity of clustering linkage: %s" % (cluster_linkage_validity)
+    print("\tValidity of clustering linkage: %s" % (cluster_linkage_validity))
 
     # Return the linkage if valid
     if cluster_linkage_validity is True:
         return cluster_return
     else:
-        print '''
+        print('''
         \n\n\n
          ---------------------------------------------
         | WARNING: THE CLUSTERING LINKAGE IS INVALID! |
          ---------------------------------------------
         \n\n\n
-        '''
+        ''')
         return None
 
 
 def ClusteringSingle(data_frame):
     # Nearest linkage on the condensed distance matrix
     cluster_single = hier.single(data_frame)
-    
+
     # Alternative cluster_return to leave the indexing in of the csv
     #cluster_return = pd.DataFrame(cluster_single)
 
@@ -54,7 +54,7 @@ def ClusteringSingle(data_frame):
 def ClusteringWeighted(data_frame):
     # WPGMA linkage on the condensed distance matrix
     cluster_weighted = hier.weighted(data_frame)
-    
+
     # Alternative cluster_return to leave the indexing in of the csv
     #cluster_return = pd.DataFrame(cluster_weighted)
 
@@ -67,7 +67,7 @@ def ClusteringWeighted(data_frame):
 def ClusteringCentroid(data_frame):
     # Centroid linkage
     cluster_centroid = hier.centroid(data_frame)
-    
+
     # Alternative cluster_return to leave the indexing in of the csv
     #cluster_return = pd.DataFrame(cluster_centroid)
 
@@ -80,7 +80,7 @@ def ClusteringCentroid(data_frame):
 def ClusteringAverage(data_frame):
     # Average linkage on a condensed distance matrix
     cluster_average = hier.average(data_frame)
-    
+
     # Alternative cluster_return to leave the indexing in of the csv
     #cluster_return = pd.DataFrame(cluster_average)
 
