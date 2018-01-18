@@ -5,8 +5,8 @@ Contact:        cnegrich@gmail.com, ahoetker@me.com, cejohn32@asu.edu
 Github:         cnegrich, ahoetker, cejohn32
 
 Date Created:   September 27, 2017
-Language Used:  Python 2.7.13
-Packages Used:  Pandas, NumPy, NetworkX, SciPy, matplotlib
+Language Used:  Python 3.6
+Packages Used:  Pandas (+xlrd), NumPy, NetworkX, SciPy, matplotlib, Rpy2, 
 
 Basic pip commands for install:
   For Linux/Unix based Users:
