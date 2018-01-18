@@ -41,7 +41,8 @@ class Dataset:
         output_dir -- String of the data output directory
         """
         for label in self.stats:
-            filename = "%s%s_%s%s" % (output_dir, label, self.name, '.csv')
+            #filename = "%s%s_%s%s" % (output_dir, label, self.name, '.csv')
+            filename = f"{output_dir}{label}_{self.name}{'.csv'}"
             self.stats[label].to_csv(filename)
 
     def getStats(self):
@@ -52,6 +53,7 @@ class Dataset:
         """
         stats_out = {}
         for label in self.stats:
-            full_name = "%s_%s" % (label, self.name)
+            #full_name = "%s_%s" % (label, self.name)
+            full_name = f"{label}_{self.name}"
             stats_out[full_name] = self.stats[label]
         return stats_out

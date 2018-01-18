@@ -125,7 +125,7 @@ def main():
     # Run basic statistical analysis over all sheets in initial_dataset list
     print("\nCalculating Descriptive Statistics, Ranking, WCGNA, and Covariance...")
     for ds in initial_datasets:
-        print("\tAnalysis of %s..." % (ds.name))
+        print(f"\tAnalysis of {ds.name}...")
         ds.addStats("std_desc_stats", StdDescStats(ds.source))
         ds.addStats("std_data_ranking", StdDataRanking(ds.source))
         ds.addStats("WGCNA", WGCNA(ds.source))
@@ -157,7 +157,7 @@ def main():
     # Run the correlation functions in corr_functions on the corr_datasets
     print("\nCalculating Correlation...")
     for ds in corr_datasets:
-        print("\tAnalysis of %s..." % (ds.name))
+        print(f"\tAnalysis of {ds.name}...")
         for cf in corr_functions:
             ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
 
@@ -188,7 +188,7 @@ def main():
     #  Run the clustering functions in clust_functions on the cluster_datasets
     print("\nCalculating Clustering Analysis...")
     for ds in cluster_datasets:
-        print("\tAnalysis of %s..." % (ds.name))
+        print(f"\tAnalysis of {ds.name}...")
         for cf in cluster_functions:
             ds.addStats("%s" % (cf), cluster_functions[cf](ds.source))
 
@@ -218,7 +218,7 @@ def main():
     # significant variables: pH, PO4P, and N03N
     print("\nCalculating Centrality Analysis...")
     for ds in cent_datasets:
-        print("\tAnalysis of %s..." % (ds.name))
+        print(f"\tAnalysis of {ds.name}...")
         for cf in cent_functions:
             ds.addStats(cf + "_pH_PO4", cent_functions[cf](ds.source, "pH", "PO4P_prop"))
             ds.addStats(cf + "_pH_NO3", cent_functions[cf](ds.source, "pH", "NO3N_prop"))
@@ -256,7 +256,7 @@ def main():
     # Run the combined functions on the combined datasets
     print("\nCalculating Combined Analysis...")
     for ds in combined_datasets:
-        print("\tAnalysis of %s..." % (ds.name))
+        print(f"\tAnalysis of {ds.name}...")
         for cf in combined_functions:
             ds.addStats(cf, combined_functions[cf](ds.source))
 
