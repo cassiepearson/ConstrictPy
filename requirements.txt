@@ -1,0 +1,19 @@
+#
+####### requirements.txt ###################
+#
+# for Arctica-Microbiome-Analysis
+# Python 3.6
+
+###### Requirements with version specifiers
+# None yet
+
+###### Requirements without version specifiers
+numpy
+scipy
+pandas
+xlrd
+networkx
+matplotlib
+
+
+##### ALSO INSTALL Rpy2 - tricky depending on system
