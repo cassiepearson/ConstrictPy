@@ -2,6 +2,7 @@ import glob
 import os
 import os.path
 import errno  # Used to check for race condition in ensureDir
+import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects import r, pandas2ri
 

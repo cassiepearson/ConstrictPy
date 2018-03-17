@@ -68,7 +68,7 @@ from io_handling import (
     ensureDir,
     batchSaveToFile,
 )
-
+from rfunctions import rFunc
 '''
 Main function
 '''
@@ -86,6 +86,7 @@ def main():
     CSV_DIR = OUTPUT_DIR + "csv/"  # Define the CSV data directory
     R_DIR = OUTPUT_DIR + "r-data-objects/"  # Define the R data directory
     CLEAR_OUTPUT = True  # Clear output directories before saving files
+    
 
     '''
     Data Import
@@ -126,7 +127,8 @@ def main():
     print("\nCalculating Descriptive Statistics, Ranking, WCGNA, and Covariance...")
     for ds in initial_datasets:
         print(f"\tAnalysis of {ds.name}...")
-        ds.addStats("std_desc_stats", StdDescStats(ds.source))
+        #ds.addStats("std_desc_stats", StdDescStats(ds.source))
+        ds.addStats("std_desc_stats", rFunc("desc_stats", ds.source))
         ds.addStats("std_data_ranking", StdDataRanking(ds.source))
         ds.addStats("WGCNA", WGCNA(ds.source))
         ds.addStats("std_cov", StdCov(ds.source))
@@ -284,6 +286,7 @@ def main():
     # R stuff
     ensureDir(R_DIR)
     batchSaveToFile(R_DIR, initial_datasets, 'Rdata', clear=CLEAR_OUTPUT)
+    
 
 
 # Initiate the main function and prevent the others from running without being
