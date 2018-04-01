@@ -1,12 +1,24 @@
 // README.txt
 
+ConstrictPy
+
+  _____            _               _   _____
+ / ____|          | |      ( )    | | |  __ \
+| |     ___  _ __ | |_ _ __ _  ___| |_| |__) |   _
+| |    / _ \| '_ \| __| '__| |/ __| __|  ___/ | | |
+| |___| (_) | | | | |_| |  | | (__| |_| |   | |_| |
+ \_____\___/|_| |_|\__|_|  |_|\___|\__|_|    \__, |
+                                              __/ |
+                                             |___/
+
+
 Authors:        Christopher Negrich, Andrew Hoetker, Courtney Johnson
 Contact:        cnegrich@gmail.com, ahoetker@me.com, cejohn32@asu.edu
 Github:         cnegrich, ahoetker, cejohn32
 
 Date Created:   September 27, 2017
 Language Used:  Python 3.6
-Packages Used:  Pandas (+xlrd), NumPy, NetworkX, SciPy, matplotlib, Rpy2, 
+Packages Used:  Pandas (+xlrd), NumPy, NetworkX, SciPy, matplotlib, Rpy2 
 
 Basic pip commands for install:
   For Linux/Unix based Users:
@@ -20,7 +32,7 @@ Basic pip commands for install:
     .\python -m pip install pandas
       Alternatively, Windows users may want to use anaconda as a package manager
 
-Some Notes on Design Philosophy and Methods:
+Original Philosophy:
   For all analysis, the entire table provided is used. This will need to be
   parsed down to the desired values. All math is done pairwise by columns. Data
   is reformatted manually before analysis to allow for clean labels during import.
@@ -31,38 +43,21 @@ Some Notes on Design Philosophy and Methods:
   provided analysis list, all analysis that has low statistical value or is
   not applicable is omitted.
 
-File Output Names and Corresponding Data Contained:
-  Starting Name    :  Connected Analysis
-  desc_stats_      :  Basic Descriptive Statistics
-  std_corr_frame_  :  Pearson Correlation
-  sprc_corr_frame_ :  Spearman Correlation
-  ktc_corr_frame_  :  Kendall Tau Correlation
-  cov_frame_       :  Standard Covariance
-  wc_corr_adj_     :  Weighted Correlation Analysis (WGCNA) Adjacency Matrix
-  ranked_frame_    :  Matrix Rank
-
-    -Note: The other portions of the WCGNA may be exported to files separately
+Current Philosophy:
+  This project has expanded to make the set of methods original implemented here more
+  efficient, accurate, and usable. From the original program, we have expanded the
+  python tool to include more methods and a much more robust object-oriented framework.
+  Additionally, now the python portion is a tool wrapper for the analysis in R. The
+  analysis in R has become a project and package of its own. The project is still a 
+  work in progress and is expanding rapidly. Current plans involve the full project
+  being available in July 2018.
 
 Usage Instructions:
   For this analysis:
-    1. Make sure that python 2.7.XX is the default version of python
+    1. Make sure that python 3.6.XX is the default version of python
     2. Install dependencies
       pip install pandas && pip install numpy && pip install networkx
     3. Run: python microbiome_analysis_arctic.py
-
-  For generalized Use (Recommended that code is prepared in new framework first):
-    1. Clean excel sheets in similar manner to Prepared_Data.xlsx
-    2. Change hardcoded names
-    3. Carry changes forward throughout the main
-    4. Implement any additional needed methods
-    5. Run
-      Basic Steps for Program Generalization:
-        1. File I/O framework support
-             Input support needed:   .xlsx, .csv, .tsv, .txt
-             Output support neeeded: .xlsx, .csv, .tsv, .txt
-        2. Create a main() function that governs a basic UI
-        3. Optional analysis algorithms implemented
-        4. Install script created to automatically install dependencies
 
 Sources:
   Pandas API:
