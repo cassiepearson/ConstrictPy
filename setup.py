@@ -15,5 +15,8 @@ setup(name='constrictpy',
           'matplotlib==2.1.0',
           'rpy2==2.9.0',
       ],
+      entry_points = {
+        'console_scripts': ['constrictpy=constrictpy.command_line:main'],
+      },
       packages=find_packages(),
       zip_safe=False)

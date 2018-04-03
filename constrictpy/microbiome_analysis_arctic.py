@@ -74,7 +74,7 @@ Main function
 '''
 
 
-def main():
+def doConstrictPy():
     '''
     Define Constants
     Set the output directories
@@ -297,4 +297,4 @@ def main():
 # Initiate the main function and prevent the others from running without being
 # called
 if __name__ == '__main__':
-    main()
+    doConstrictPy()

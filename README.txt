@@ -18,19 +18,18 @@ Github:         cnegrich, ahoetker, cejohn32
 
 Date Created:   September 27, 2017
 Language Used:  Python 3.6
-Packages Used:  Pandas (+xlrd), NumPy, NetworkX, SciPy, matplotlib, Rpy2 
+Packages Used:  Pandas (+xlrd), NumPy, NetworkX, SciPy, matplotlib, Rpy2
 
 Basic pip commands for install:
-  For Linux/Unix based Users:
-    pip install pandas && pip install numpy && pip install networkx
-      -This will automatically install scipy and numpy-mkl
-  For Windows Users:
-    Python Wheels: http://www.lfd.uci.edu/~gohlke/pythonlibs/
-    .\python -m pip install "C:\..filepath..\scipy.whl"
-    .\python -m pip install "C:\..filepath..\numpy-mkl.whl"
-    .\python -m pip install "C:\..filepath..\networkx.whl"
-    .\python -m pip install pandas
-      Alternatively, Windows users may want to use anaconda as a package manager
+  git clone https://github.com/ahoetker/ConstrictPy.git
+  cd ConstrictPy
+  pip install .
+
+Commands to install as editable:
+  git clone https://github.com/ahoetker/ConstrictPy.git
+  cd ConstrictPy
+  pip install -e .
+
 
 Original Philosophy:
   For all analysis, the entire table provided is used. This will need to be
@@ -48,16 +47,15 @@ Current Philosophy:
   efficient, accurate, and usable. From the original program, we have expanded the
   python tool to include more methods and a much more robust object-oriented framework.
   Additionally, now the python portion is a tool wrapper for the analysis in R. The
-  analysis in R has become a project and package of its own. The project is still a 
+  analysis in R has become a project and package of its own. The project is still a
   work in progress and is expanding rapidly. Current plans involve the full project
   being available in July 2018.
 
 Usage Instructions:
   For this analysis:
     1. Make sure that python 3.6.XX is the default version of python
-    2. Install dependencies
-      pip install pandas && pip install numpy && pip install networkx
-    3. Run: python microbiome_analysis_arctic.py
+    2. Install ConstrictPy
+    3. Run: constrictpy
 
 Sources:
   Pandas API:
