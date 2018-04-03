@@ -20,12 +20,12 @@ def sourceRFunctions():
     """
     pandas2ri.activate()
 
-    constrict_r_dir = pkg_resources.resource_filename('constrictpy','ConstrictR')
+    r_dir = pkg_resources.resource_filename('ConstrictR','')
     blacklist = ["centrality.R"]
 
-    for file in os.listdir(constrict_r_dir):
+    for file in os.listdir(r_dir):
         if os.path.splitext(file)[1] == '.R' and file not in blacklist:
-            rfile = os.path.join(constrict_r_dir, file)
+            rfile = os.path.join(r_dir, file)
             r["source"](rfile)
 
 def rFunc(r_function_name, df):
