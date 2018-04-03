@@ -39,36 +39,36 @@ import scipy.cluster.hierarchy as hier  # Heirarchical clustering functions
 import networkx as nx  # Network statistical package for centrality
 
 # Import custom modules and classes
-from Dataset import Dataset  # Dataset classes
-from std_corr import (  # Correlation functions
+from constrictpy.Dataset import Dataset  # Dataset classes
+from constrictpy.std_corr import (  # Correlation functions
     StdCorr,
     SprCorr,
     KtCorr,
 )
-from std_stats import (  # Descriptive stats, ranking, covariance functions
+from constrictpy.std_stats import (  # Descriptive stats, ranking, covariance functions
     StdDescStats,
     StdDataRanking,
     StdCov,
 )
-from wgcna import WGCNA  # Weighted Correlation Network Analysis
-from clustering import (  # Clustering functions
+from constrictpy.wgcna import WGCNA  # Weighted Correlation Network Analysis
+from constrictpy.clustering import (  # Clustering functions
     ClusteringLinkage,
     ClusteringSingle,
     ClusteringWeighted,
     ClusteringCentroid,
     ClusteringAverage,
 )
-from centrality import (  # Centrality functions
+from constrictpy.centrality import (  # Centrality functions
     CentralityEigen,
     CentralityDegree,
     CentralityClose,
     CentralityBtwn,
 )
-from io_handling import (
+from constrictpy.io_handling import (
     ensureDir,
     batchSaveToFile,
 )
-from rfunctions import rFunc
+from constrictpy.rfunctions import sourceRFunctions, rFunc
 '''
 Main function
 '''
@@ -86,13 +86,12 @@ def main():
     CSV_DIR = OUTPUT_DIR + "csv/"  # Define the CSV data directory
     R_DIR = OUTPUT_DIR + "r-data-objects/"  # Define the R data directory
     CLEAR_OUTPUT = True  # Clear output directories before saving files
-    
+
 
     '''
     Data Import
     Parse sheets of the excel data into six Dataset objects as dataset.source
     '''
-
     # Excel file
     excel_file = pd.ExcelFile("Prepared_Data.xlsx")
 
@@ -117,6 +116,12 @@ def main():
         sheet_combined_14,
         sheet_combined_16
     ]
+
+    '''
+    Rpy2 Spinup
+    Start the Rpy2 instance and source functions from ConstrictR
+    '''
+    sourceRFunctions()
 
     '''
     Descriptive statistics, Ranking, WGCNA, Covariance for each sheet
@@ -286,7 +291,7 @@ def main():
     # R stuff
     ensureDir(R_DIR)
     batchSaveToFile(R_DIR, initial_datasets, 'Rdata', clear=CLEAR_OUTPUT)
-    
+
 
 
 # Initiate the main function and prevent the others from running without being
