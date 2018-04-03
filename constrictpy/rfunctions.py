@@ -21,7 +21,7 @@ def sourceRFunctions():
     pandas2ri.activate()
 
     r_dir = pkg_resources.resource_filename('ConstrictR','')
-    blacklist = ["centrality.R"]
+    blacklist = []
 
     for file in os.listdir(r_dir):
         if os.path.splitext(file)[1] == '.R' and file not in blacklist:
