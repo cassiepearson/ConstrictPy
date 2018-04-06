@@ -1,11 +1,6 @@
 """
-Created on Fri Mar 16 17:37:51 2018
-
-@author: andrew
-
-This file sources the given .R files to the RPy 2 engine.
-For absolute ease of use, it should live in the ConstrictR directory
-with the .R files.
+Initialize the R portion of the program by activating pandas2ri
+and sourcing the functions from ConstrictR.
 """
 
 import rpy2.robjects as robjects
@@ -17,6 +12,7 @@ import pkg_resources
 def sourceRFunctions():
     """
     Source .R files from ConstrictR into the RPy2 engine.
+    Should be called near the top of main program. 
     """
     pandas2ri.activate()
 
@@ -28,6 +24,12 @@ def sourceRFunctions():
             rfile = os.path.join(r_dir, file)
             r["source"](rfile)
 
+
 def rFunc(r_function_name, df):
+    """
+    Passes the string r_function_name and the DataFrame df to Rpy2. 
+    Returns the DataFrame from R once converted back to pandas DataFrame.
+    """
     r_df = r[f"{r_function_name}"](df)
     return pandas2ri.ri2py_dataframe(r_df)
+    
