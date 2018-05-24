@@ -28,7 +28,7 @@ def datasetToCSV(output_dir, dataset):
     """
     export_data = dataset.getStats()
     for label in export_data:
-        file_name = "%s.%s" % (label, 'csv')
+        file_name = "%s.%s" % (label, "csv")
         file_path = os.path.join(output_dir, file_name)
         export_data[label].to_csv(file_path)
 
@@ -42,7 +42,7 @@ def datasetToRdata(output_dir, dataset):
     pandas2ri.activate()
     export_data = dataset.getStats()
     for label in export_data:
-        file_name = "%s.%s" % (label, 'Rdata')
+        file_name = "%s.%s" % (label, "Rdata")
         file_path = os.path.join(output_dir, file_name)
         r_df = pandas2ri.py2ri(export_data[label])
         robjects.r.assign(label, r_df)
@@ -60,10 +60,10 @@ def batchSaveToFile(output_dir, datasets, filetype, clear=False):
         filetype - string describing desired output
         clear - should output_dir be cleared? default False.
     """
-    
+
     if clear is True:
         clearDir(output_dir)  # clear before writing new files
-        
+
     print(f"\nSaving dataframes to {output_dir} as type {filetype}...")
 
     filetype = str.lower(str(filetype))  # quick and dirty normalization
@@ -78,5 +78,5 @@ def batchSaveToFile(output_dir, datasets, filetype, clear=False):
             datasetToRdata(output_dir, dataset)
     else:
         print(f"\t{filetype} is not an acceptable filetype (csv, r, rdata)")
-        
+
     print("\tDone")

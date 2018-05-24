@@ -1,4 +1,4 @@
-'''
+"""
 Artic Microbiome Data Analysis
 Authored by:
     Christopher Negrich contact at cnegrich@gmail.com
@@ -31,7 +31,7 @@ Modifications for generalization into tool (next step):
 
 For internal team reference:
     -Search "***" for high priority changes
-'''
+"""
 # Import all needed packages, see documentation for details
 import pandas as pd
 import numpy as np  # NumPy statistical package, needed for networkx graphs
@@ -40,11 +40,7 @@ import networkx as nx  # Network statistical package for centrality
 
 # Import custom modules and classes
 from constrictpy.Dataset import Dataset  # Dataset classes
-from constrictpy.std_corr import (  # Correlation functions
-    StdCorr,
-    SprCorr,
-    KtCorr,
-)
+from constrictpy.std_corr import StdCorr, SprCorr, KtCorr  # Correlation functions
 from constrictpy.std_stats import (  # Descriptive stats, ranking, covariance functions
     StdDescStats,
     StdDataRanking,
@@ -64,42 +60,43 @@ from constrictpy.centrality import (  # Centrality functions
     CentralityClose,
     CentralityBtwn,
 )
-from constrictpy.io_handling import (
-    ensureDir,
-    batchSaveToFile,
-)
+from constrictpy.io_handling import ensureDir, batchSaveToFile
 from constrictpy.rfunctions import sourceRFunctions, rFunc
-'''
+
+"""
 Main function
-'''
+"""
 
 
 def doConstrictPy():
-    '''
+    """
     Define Constants
     Set the output directories
     Choose whether to reset the output directory
     Choose whether to print stats summary to console
-    '''
+    """
     VERBOSE = False  # Print DataFrames to console during file output
     OUTPUT_DIR = "output-files/"  # Define the output directory
     CSV_DIR = OUTPUT_DIR + "csv/"  # Define the CSV data directory
     R_DIR = OUTPUT_DIR + "r-data-objects/"  # Define the R data directory
     CLEAR_OUTPUT = True  # Clear output directories before saving files
 
-
-    '''
+    """
     Data Import
     Parse sheets of the excel data into six Dataset objects as dataset.source
-    '''
+    """
     # Excel file
     excel_file = pd.ExcelFile("Prepared_Data.xlsx")
 
     # Import excel sheets
     sheet_2014 = Dataset("sheet_2014", excel_file.parse("sample_conditions_year_2014"))
     sheet_2016 = Dataset("sheet_2016", excel_file.parse("sample_conditions_year_2016"))
-    sheet_OTU_abundance = Dataset("sheet_OTU_abundance", excel_file.parse("Sorted_OTU_Abundance"))
-    sheet_2016_2014 = Dataset("sheet_2016_2014", excel_file.parse("sample_conditions_2016_2014"))
+    sheet_OTU_abundance = Dataset(
+        "sheet_OTU_abundance", excel_file.parse("Sorted_OTU_Abundance")
+    )
+    sheet_2016_2014 = Dataset(
+        "sheet_2016_2014", excel_file.parse("sample_conditions_2016_2014")
+    )
     sheet_16S_2014_OTU = Dataset("sheet_16S_2014_OTU", excel_file.parse("16S_2014_OTU"))
     sheet_16S_2016_OTU = Dataset("sheet_16S_2016_OTU", excel_file.parse("16S_2016_OTU"))
     sheet_combined_14 = Dataset("sheet_combined_14", excel_file.parse("combined_14"))
@@ -114,35 +111,35 @@ def doConstrictPy():
         sheet_16S_2014_OTU,
         sheet_16S_2016_OTU,
         sheet_combined_14,
-        sheet_combined_16
+        sheet_combined_16,
     ]
 
-    '''
+    """
     Rpy2 Spinup
     Start the Rpy2 instance and source functions from ConstrictR
-    '''
+    """
     sourceRFunctions()
 
-    '''
+    """
     Descriptive statistics, Ranking, WGCNA, Covariance for each sheet
     Dataframes are added to Dataset objects
-    '''
+    """
 
     # Run basic statistical analysis over all sheets in initial_dataset list
     print("\nCalculating Descriptive Statistics, Ranking, WCGNA, and Covariance...")
     for ds in initial_datasets:
         print(f"\tAnalysis of {ds.name}...")
-        #ds.addStats("std_desc_stats", StdDescStats(ds.source))
+        # ds.addStats("std_desc_stats", StdDescStats(ds.source))
         ds.addStats("std_desc_stats", rFunc("desc_stats", ds.source))
         ds.addStats("std_data_ranking", StdDataRanking(ds.source))
         ds.addStats("WGCNA", WGCNA(ds.source))
         ds.addStats("std_cov", StdCov(ds.source))
 
-    '''
+    """
     Correlation Analysis
     For each sheet of data, runs four centrality analyses. Each analysis
     is done columnwise across the dataframe.
-    '''
+    """
 
     # Equivalent to initial_datasets, copy made for ease of analysis change
     corr_datasets = [
@@ -151,15 +148,11 @@ def doConstrictPy():
         sheet_OTU_abundance,
         sheet_2016_2014,
         sheet_16S_2014_OTU,
-        sheet_16S_2016_OTU
+        sheet_16S_2016_OTU,
     ]
 
     # List of correlation functions to be run
-    corr_functions = {
-        "std_corr": StdCorr,
-        "spr_corr": SprCorr,
-        "kt_corr": KtCorr,
-    }
+    corr_functions = {"std_corr": StdCorr, "spr_corr": SprCorr, "kt_corr": KtCorr}
 
     # Run the correlation functions in corr_functions on the corr_datasets
     print("\nCalculating Correlation...")
@@ -168,10 +161,10 @@ def doConstrictPy():
         for cf in corr_functions:
             ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
 
-    '''
+    """
     Clustering Analysis
     For each sheet of data, runs four centrality analyses.
-    '''
+    """
 
     # Equivalent to initial_datasets, copy made for ease of analysis change
     cluster_datasets = [
@@ -180,7 +173,7 @@ def doConstrictPy():
         sheet_OTU_abundance,
         sheet_2016_2014,
         sheet_16S_2014_OTU,
-        sheet_16S_2016_OTU
+        sheet_16S_2016_OTU,
     ]
 
     # List of clustering functions to be run
@@ -189,7 +182,7 @@ def doConstrictPy():
         "clustering_single": ClusteringSingle,
         "clustering_weighted": ClusteringWeighted,
         "clustering_centroid": ClusteringCentroid,
-        "clustering_average": ClusteringAverage
+        "clustering_average": ClusteringAverage,
     }
 
     #  Run the clustering functions in clust_functions on the cluster_datasets
@@ -199,26 +192,22 @@ def doConstrictPy():
         for cf in cluster_functions:
             ds.addStats("%s" % (cf), cluster_functions[cf](ds.source))
 
-    '''
+    """
     Centrality analysis
     For each sheet of data, runs four centrality analyses. Each analysis
     is between two of three columns, for a total of 12 analyses per sheet. The
     analysis is between pH, Nitrate, and Phosphate.
-    '''
+    """
 
     # List of sheets to run the centrality functions on
-    cent_datasets = [
-        sheet_2014,
-        sheet_2016,
-        sheet_2016_2014
-    ]
+    cent_datasets = [sheet_2014, sheet_2016, sheet_2016_2014]
 
     # List of centrality functions to be run
     cent_functions = {
         "eigen_centrality": CentralityEigen,
         "degree_centrality": CentralityDegree,
         "closeness_centrality": CentralityClose,
-        "betweenness_centrality": CentralityBtwn
+        "betweenness_centrality": CentralityBtwn,
     }
 
     # Run the listed centrality functions on the listed sheets over three
@@ -227,22 +216,25 @@ def doConstrictPy():
     for ds in cent_datasets:
         print(f"\tAnalysis of {ds.name}...")
         for cf in cent_functions:
-            ds.addStats(cf + "_pH_PO4", cent_functions[cf](ds.source, "pH", "PO4P_prop"))
-            ds.addStats(cf + "_pH_NO3", cent_functions[cf](ds.source, "pH", "NO3N_prop"))
-            ds.addStats(cf + "_PO4_NO3", cent_functions[cf](ds.source, "PO4P_prop", "NO3N_prop"))
+            ds.addStats(
+                cf + "_pH_PO4", cent_functions[cf](ds.source, "pH", "PO4P_prop")
+            )
+            ds.addStats(
+                cf + "_pH_NO3", cent_functions[cf](ds.source, "pH", "NO3N_prop")
+            )
+            ds.addStats(
+                cf + "_PO4_NO3", cent_functions[cf](ds.source, "PO4P_prop", "NO3N_prop")
+            )
 
-    '''
+    """
     Combined Analysis
     This is for analysis of tables that combine both the OTU and viarable
     tables. These tables are simply the transpose of the variable and OTU
     datasets combined and re-indexed. This allows for a cross table analysis.
-    '''
+    """
 
     # List of the combined datasets
-    combined_datasets = [
-        sheet_combined_14,
-        sheet_combined_16
-    ]
+    combined_datasets = [sheet_combined_14, sheet_combined_16]
 
     # Functions that can be run on the combined datasets
     combined_functions = {
@@ -257,7 +249,7 @@ def doConstrictPy():
         "clustering_single": ClusteringSingle,
         "clustering_weighted": ClusteringWeighted,
         "clustering_centroid": ClusteringCentroid,
-        "clustering_average": ClusteringAverage
+        "clustering_average": ClusteringAverage,
     }
 
     # Run the combined functions on the combined datasets
@@ -267,14 +259,14 @@ def doConstrictPy():
         for cf in combined_functions:
             ds.addStats(cf, combined_functions[cf](ds.source))
 
-    '''
+    """
     Output
 
     Print lots of stuff to console if VERBOSE
     Make sure directories exist
     Save DataFrames to CSV files
     Save Dataframes to Rdata files
-    '''
+    """
 
     # Print to console
     if VERBOSE is True:
@@ -286,15 +278,14 @@ def doConstrictPy():
 
     # CSV stuff
     ensureDir(CSV_DIR)
-    batchSaveToFile(CSV_DIR, initial_datasets, 'csv', clear=CLEAR_OUTPUT)
+    batchSaveToFile(CSV_DIR, initial_datasets, "csv", clear=CLEAR_OUTPUT)
 
     # R stuff
     ensureDir(R_DIR)
-    batchSaveToFile(R_DIR, initial_datasets, 'Rdata', clear=CLEAR_OUTPUT)
-
+    batchSaveToFile(R_DIR, initial_datasets, "Rdata", clear=CLEAR_OUTPUT)
 
 
 # Initiate the main function and prevent the others from running without being
 # called
-if __name__ == '__main__':
+if __name__ == "__main__":
     doConstrictPy()

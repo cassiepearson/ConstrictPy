@@ -16,11 +16,11 @@ def sourceRFunctions():
     """
     pandas2ri.activate()
 
-    r_dir = pkg_resources.resource_filename('ConstrictR','')
+    r_dir = pkg_resources.resource_filename("ConstrictR", "")
     blacklist = []
 
     for file in os.listdir(r_dir):
-        if os.path.splitext(file)[1] == '.R' and file not in blacklist:
+        if os.path.splitext(file)[1] == ".R" and file not in blacklist:
             rfile = os.path.join(r_dir, file)
             r["source"](rfile)
 
@@ -32,4 +32,3 @@ def rFunc(r_function_name, df):
     """
     r_df = r[f"{r_function_name}"](df)
     return pandas2ri.ri2py_dataframe(r_df)
-    
