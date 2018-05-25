@@ -1,9 +1,10 @@
 """
-Artic Microbiome Data Analysis
+ConstrictPy
 Authored by:
-    Christopher Negrich contact at cnegrich@gmail.com
-    Andrew Hoetker contact at ahoetker@asu.edu
-    Courtney Johnson contact at cejohn32@asu.edu
+    Christopher Negrich - contact at cnegrich@gmail.com
+    Andrew Hoetker - contact at ahoetker@asu.edu
+    Courtney Johnson - contact at cejohn32@asu.edu
+    TODO: add Gabriel
 Last Updated: October 2017
 
 This program is designed to allow for a variety of similar data sets to be
@@ -13,24 +14,15 @@ sets.
 
 Modifications for generalization into tool (next step):
     //TODO:
-        -Rewrite everything in Python 3 - Still not widely adopted may want
-         to remain in 2.XX
-        -Prepare a formalized and breif project style guide
-
         -Port all documentation to github
-        -Background research - Citations
         -Create a user interface (Chris)
-        -Create a robust file import/export functions
-            -Ask Dr. Cao about what programs we will be taking input from
-        -Write mathematical documentation for implementations
         -Port algorithms to R
         -Create functions for graphing
         -Further subdivide and enumerate possible algorithms
             -Allow for as much user choice as possible
         -Find test data sets - Random data, other experimental data
 
-For internal team reference:
-    -Search "***" for high priority changes
+
 """
 # Import all needed packages, see documentation for details
 import pandas as pd
