@@ -39,19 +39,6 @@ from constrictpy.std_stats import (  # Descriptive stats, ranking, covariance fu
     StdCov,
 )
 from constrictpy.wgcna import WGCNA  # Weighted Correlation Network Analysis
-from constrictpy.clustering import (  # Clustering functions
-    ClusteringLinkage,
-    ClusteringSingle,
-    ClusteringWeighted,
-    ClusteringCentroid,
-    ClusteringAverage,
-)
-from constrictpy.centrality import (  # Centrality functions
-    CentralityEigen,
-    CentralityDegree,
-    CentralityClose,
-    CentralityBtwn,
-)
 from constrictpy.io_handling import ensureDir, batchSaveToFile
 from constrictpy.rfunctions import sourceRFunctions, rFunc
 
@@ -154,71 +141,6 @@ def doConstrictPy():
             ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
 
     """
-    Clustering Analysis
-    For each sheet of data, runs four centrality analyses.
-    """
-
-    # Equivalent to initial_datasets, copy made for ease of analysis change
-    cluster_datasets = [
-        sheet_2014,
-        sheet_2016,
-        sheet_OTU_abundance,
-        sheet_2016_2014,
-        sheet_16S_2014_OTU,
-        sheet_16S_2016_OTU,
-    ]
-
-    # List of clustering functions to be run
-    cluster_functions = {
-        "clustering_linkage": ClusteringLinkage,
-        "clustering_single": ClusteringSingle,
-        "clustering_weighted": ClusteringWeighted,
-        "clustering_centroid": ClusteringCentroid,
-        "clustering_average": ClusteringAverage,
-    }
-
-    #  Run the clustering functions in clust_functions on the cluster_datasets
-    print("\nCalculating Clustering Analysis...")
-    for ds in cluster_datasets:
-        print(f"\tAnalysis of {ds.name}...")
-        for cf in cluster_functions:
-            ds.addStats("%s" % (cf), cluster_functions[cf](ds.source))
-
-    """
-    Centrality analysis
-    For each sheet of data, runs four centrality analyses. Each analysis
-    is between two of three columns, for a total of 12 analyses per sheet. The
-    analysis is between pH, Nitrate, and Phosphate.
-    """
-
-    # List of sheets to run the centrality functions on
-    cent_datasets = [sheet_2014, sheet_2016, sheet_2016_2014]
-
-    # List of centrality functions to be run
-    cent_functions = {
-        "eigen_centrality": CentralityEigen,
-        "degree_centrality": CentralityDegree,
-        "closeness_centrality": CentralityClose,
-        "betweenness_centrality": CentralityBtwn,
-    }
-
-    # Run the listed centrality functions on the listed sheets over three
-    # significant variables: pH, PO4P, and N03N
-    print("\nCalculating Centrality Analysis...")
-    for ds in cent_datasets:
-        print(f"\tAnalysis of {ds.name}...")
-        for cf in cent_functions:
-            ds.addStats(
-                cf + "_pH_PO4", cent_functions[cf](ds.source, "pH", "PO4P_prop")
-            )
-            ds.addStats(
-                cf + "_pH_NO3", cent_functions[cf](ds.source, "pH", "NO3N_prop")
-            )
-            ds.addStats(
-                cf + "_PO4_NO3", cent_functions[cf](ds.source, "PO4P_prop", "NO3N_prop")
-            )
-
-    """
     Combined Analysis
     This is for analysis of tables that combine both the OTU and viarable
     tables. These tables are simply the transpose of the variable and OTU
@@ -237,11 +159,6 @@ def doConstrictPy():
         "std_corr": StdCorr,
         "spr_corr": SprCorr,
         "kt_corr": KtCorr,
-        "clustering_linkage": ClusteringLinkage,
-        "clustering_single": ClusteringSingle,
-        "clustering_weighted": ClusteringWeighted,
-        "clustering_centroid": ClusteringCentroid,
-        "clustering_average": ClusteringAverage,
     }
 
     # Run the combined functions on the combined datasets
