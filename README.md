@@ -1,6 +1,6 @@
 # ConstrictPy
 
-
+![](assets/logo.png)
 
 Original Philosophy:
   For all analysis, the entire table provided is used. This will need to be
