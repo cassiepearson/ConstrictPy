@@ -5,6 +5,7 @@ import errno  # Used to check for race condition in ensureDir
 import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects import r, pandas2ri
+import logging
 
 
 def clearDir(dir_path):  # remove all files from a directory
@@ -64,19 +65,19 @@ def batchSaveToFile(output_dir, datasets, filetype, clear=False):
     if clear is True:
         clearDir(output_dir)  # clear before writing new files
 
-    print(f"\nSaving dataframes to {output_dir} as type {filetype}...")
+    logging.info(f"Saving dataframes to {output_dir} as type {filetype}...")
 
     filetype = str.lower(str(filetype))  # quick and dirty normalization
 
     if filetype == "csv":
         for dataset in datasets:
-            print(f"\tSaving dataframes from {dataset.name}...")
+            logging.info(f"\tSaving dataframes from {dataset.name}...")
             datasetToCSV(output_dir, dataset)
     elif filetype == "r" or filetype == "rdata":
         for dataset in datasets:
-            print(f"\tSaving dataframes from {dataset.name}...")
+            logging.info(f"\tSaving dataframes from {dataset.name}...")
             datasetToRdata(output_dir, dataset)
     else:
-        print(f"\t{filetype} is not an acceptable filetype (csv, r, rdata)")
+        logging.warning(f"\t{filetype} is not an acceptable filetype (csv, r, rdata)")
 
-    print("\tDone")
+    logging.info("{} batch save complete".format(filetype))

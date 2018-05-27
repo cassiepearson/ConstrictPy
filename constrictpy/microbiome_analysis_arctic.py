@@ -41,6 +41,8 @@ from constrictpy.std_stats import (  # Descriptive stats, ranking, covariance fu
 from constrictpy.wgcna import WGCNA  # Weighted Correlation Network Analysis
 from constrictpy.io_handling import ensureDir, batchSaveToFile
 from constrictpy.rfunctions import sourceRFunctions, rFunc
+import logging
+from logger import startLogger
 
 """
 Main function
@@ -48,6 +50,7 @@ Main function
 
 
 def doConstrictPy():
+
     """
     Define Constants
     Set the output directories
@@ -59,6 +62,14 @@ def doConstrictPy():
     CSV_DIR = OUTPUT_DIR + "csv/"  # Define the CSV data directory
     R_DIR = OUTPUT_DIR + "r-data-objects/"  # Define the R data directory
     CLEAR_OUTPUT = True  # Clear output directories before saving files
+    LOG_LEVEL = "info"
+    CLEAR_LOG = True
+
+    """
+    Start logging. The logger module is found in constrictpy/logging.py
+    """
+    startLogger(LOG_LEVEL, CLEAR_LOG)
+    logging.info("Starting")
 
     """
     Data Import
@@ -105,9 +116,11 @@ def doConstrictPy():
     """
 
     # Run basic statistical analysis over all sheets in initial_dataset list
-    print("\nCalculating Descriptive Statistics, Ranking, WCGNA, and Covariance...")
+    logging.info(
+        "Calculating Descriptive Statistics, Ranking, WCGNA, and Covariance..."
+    )
     for ds in initial_datasets:
-        print(f"\tAnalysis of {ds.name}...")
+        logging.info(f"\tAnalysis of {ds.name}...")
         # ds.addStats("std_desc_stats", StdDescStats(ds.source))
         ds.addStats("std_desc_stats", rFunc("desc_stats", ds.source))
         ds.addStats("std_data_ranking", StdDataRanking(ds.source))
@@ -134,9 +147,9 @@ def doConstrictPy():
     corr_functions = {"std_corr": StdCorr, "spr_corr": SprCorr, "kt_corr": KtCorr}
 
     # Run the correlation functions in corr_functions on the corr_datasets
-    print("\nCalculating Correlation...")
+    logging.info("Calculating Correlation...")
     for ds in corr_datasets:
-        print(f"\tAnalysis of {ds.name}...")
+        logging.info(f"\tAnalysis of {ds.name}...")
         for cf in corr_functions:
             ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
 
@@ -162,9 +175,9 @@ def doConstrictPy():
     }
 
     # Run the combined functions on the combined datasets
-    print("\nCalculating Combined Analysis...")
+    logging.info("Calculating Combined Analysis...")
     for ds in combined_datasets:
-        print(f"\tAnalysis of {ds.name}...")
+        logging.info(f"\tAnalysis of {ds.name}...")
         for cf in combined_functions:
             ds.addStats(cf, combined_functions[cf](ds.source))
 
@@ -180,7 +193,7 @@ def doConstrictPy():
     # Print to console
     if VERBOSE is True:
         for ds in initial_datasets:
-            ds.printStats()
+            ds.logStats()
 
     # Make sure the output directory exists
     ensureDir(OUTPUT_DIR)
