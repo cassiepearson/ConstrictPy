@@ -1,5 +1,7 @@
 import logging
 import pkg_resources
+from time import strftime
+
 
 def startLogger(logmode, clear=True):
     # determine log level from input
@@ -12,7 +14,8 @@ def startLogger(logmode, clear=True):
         loglevel = logging.INFO
 
     # set the log filename
-    logfile = pkg_resources.resource_filename("logs", "logs/constrictpy.log")
+    ts = strftime("%Y-%m-%d-%H.%M.%S")
+    logfile = pkg_resources.resource_filename("logs", "logs/{}.log".format(ts))
 
     # clear the log file
     if clear is True:

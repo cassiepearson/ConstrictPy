@@ -48,8 +48,8 @@ from logger import startLogger
 Main function
 """
 
-def doConstrictPy():
 
+def doConstrictPy():
 
     """
     Define Constants
@@ -116,7 +116,9 @@ def doConstrictPy():
     """
 
     # Run basic statistical analysis over all sheets in initial_dataset list
-    logging.info("Calculating Descriptive Statistics, Ranking, WCGNA, and Covariance...")
+    logging.info(
+        "Calculating Descriptive Statistics, Ranking, WCGNA, and Covariance..."
+    )
     for ds in initial_datasets:
         logging.info(f"\tAnalysis of {ds.name}...")
         # ds.addStats("std_desc_stats", StdDescStats(ds.source))
