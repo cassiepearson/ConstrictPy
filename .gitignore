@@ -1,6 +1,9 @@
 # Compiled python modules.
 *.pyc
 
+# log files
+/logs/*
+
 # output files
 /output-files/*
 

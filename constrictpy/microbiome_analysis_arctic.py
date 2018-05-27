@@ -116,7 +116,7 @@ def doConstrictPy():
     """
 
     # Run basic statistical analysis over all sheets in initial_dataset list
-    logging.info("\nCalculating Descriptive Statistics, Ranking, WCGNA, and Covariance...")
+    logging.info("Calculating Descriptive Statistics, Ranking, WCGNA, and Covariance...")
     for ds in initial_datasets:
         logging.info(f"\tAnalysis of {ds.name}...")
         # ds.addStats("std_desc_stats", StdDescStats(ds.source))
@@ -145,7 +145,7 @@ def doConstrictPy():
     corr_functions = {"std_corr": StdCorr, "spr_corr": SprCorr, "kt_corr": KtCorr}
 
     # Run the correlation functions in corr_functions on the corr_datasets
-    logging.info("\nCalculating Correlation...")
+    logging.info("Calculating Correlation...")
     for ds in corr_datasets:
         logging.info(f"\tAnalysis of {ds.name}...")
         for cf in corr_functions:
@@ -173,7 +173,7 @@ def doConstrictPy():
     }
 
     # Run the combined functions on the combined datasets
-    logging.info("\nCalculating Combined Analysis...")
+    logging.info("Calculating Combined Analysis...")
     for ds in combined_datasets:
         logging.info(f"\tAnalysis of {ds.name}...")
         for cf in combined_functions:
@@ -191,7 +191,7 @@ def doConstrictPy():
     # Print to console
     if VERBOSE is True:
         for ds in initial_datasets:
-            ds.printStats()
+            ds.logStats()
 
     # Make sure the output directory exists
     ensureDir(OUTPUT_DIR)

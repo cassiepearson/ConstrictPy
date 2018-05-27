@@ -1,4 +1,5 @@
 import pandas as pd  # Necessary to handle dataframes
+import logging
 
 
 class Dataset:
@@ -25,11 +26,11 @@ class Dataset:
         """
         self.stats[label] = frame
 
-    def printStats(self):
+    def logStats(self):
         """ Print all statistics with labels """
         for label in self.stats:
-            print(label)
-            print(self.stats[label])
+            logging.info(label)
+            logging.info(self.stats[label])
 
     def statsToCSV(self, output_dir):
         """
