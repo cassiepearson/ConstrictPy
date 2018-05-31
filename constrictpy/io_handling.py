@@ -6,7 +6,8 @@ import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects import r, pandas2ri
 import logging
-
+from time import strftime
+from shutil import make_archive, copytree, copyfile
 
 def clearDir(dir_path):  # remove all files from a directory
     filelist = glob.glob(os.path.join(dir_path, "*.*"))
@@ -21,6 +22,18 @@ def ensureDir(dir_path):  # create the directory if it doesn't exist
         if e.errno != errno.EEXIST:  # is it just because the dir exists? No?
             raise  # OK, then tell me about it.
 
+def compressDir(target, root_dir):
+    """
+    Takes a directory and returns the compressed result as a file path
+    """
+    make_archive(target, 'zip', root_dir)
+
+def moveToUploads(file):
+    uploads_dir = os.path.join("app", "uploads")
+    ensureDir(uploads_dir)
+    clearDir(uploads_dir)
+    filepath = os.path.join(file)
+    copyfile(filepath, os.path.join(uploads_dir, "archive.zip"))
 
 def datasetToCSV(output_dir, dataset):
     """

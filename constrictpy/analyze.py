@@ -26,9 +26,6 @@ Modifications for generalization into tool (next step):
 """
 # Import all needed packages, see documentation for details
 import pandas as pd
-import numpy as np  # NumPy statistical package, needed for networkx graphs
-import scipy.cluster.hierarchy as hier  # Heirarchical clustering functions
-import networkx as nx  # Network statistical package for centrality
 
 # Import custom modules and classes
 from constrictpy.Dataset import Dataset  # Dataset classes
@@ -39,17 +36,17 @@ from constrictpy.std_stats import (  # Descriptive stats, ranking, covariance fu
     StdCov,
 )
 from constrictpy.wgcna import WGCNA  # Weighted Correlation Network Analysis
-from constrictpy.io_handling import ensureDir, batchSaveToFile
+from constrictpy.io_handling import ensureDir, batchSaveToFile, compressDir, moveToUploads
 from constrictpy.rfunctions import sourceRFunctions, rFunc
 import logging
-from logger import startLogger
+from constrictpy.logger import startLogger
 
 """
 Main function
 """
 
 
-def doConstrictPy(use_methods):
+def doConstrictPy(datafile, use_methods):
 
     """
     Define Constants
@@ -76,7 +73,7 @@ def doConstrictPy(use_methods):
     Parse sheets of the excel data into six Dataset objects as dataset.source
     """
     # Excel file
-    excel_file = pd.ExcelFile("Prepared_Data.xlsx")
+    excel_file = pd.ExcelFile(datafile)
 
     # Import excel sheets
     sheet_2014 = Dataset("sheet_2014", excel_file.parse("sample_conditions_year_2014"))
@@ -121,11 +118,14 @@ def doConstrictPy(use_methods):
     )
     for ds in initial_datasets:
         logging.info(f"\tAnalysis of {ds.name}...")
-        # ds.addStats("std_desc_stats", StdDescStats(ds.source))
-        ds.addStats("std_desc_stats", rFunc("desc_stats", ds.source))
-        ds.addStats("std_data_ranking", StdDataRanking(ds.source))
-        ds.addStats("WGCNA", WGCNA(ds.source))
-        ds.addStats("std_cov", StdCov(ds.source))
+        if use_methods["std_desc_stats"] is True:
+            ds.addStats("std_desc_stats", rFunc("desc_stats", ds.source))
+        if use_methods["std_data_ranking"] is True:
+            ds.addStats("std_data_ranking", StdDataRanking(ds.source))
+        if use_methods["WGCNA"] is True:
+            ds.addStats("WGCNA", WGCNA(ds.source))
+        if use_methods["std_cov"] is True:
+            ds.addStats("std_cov", StdCov(ds.source))
 
     """
     Correlation Analysis
@@ -146,12 +146,14 @@ def doConstrictPy(use_methods):
     # List of correlation functions to be run
     corr_functions = {"std_corr": StdCorr, "spr_corr": SprCorr, "kt_corr": KtCorr}
 
+
     # Run the correlation functions in corr_functions on the corr_datasets
     logging.info("Calculating Correlation...")
     for ds in corr_datasets:
         logging.info(f"\tAnalysis of {ds.name}...")
         for cf in corr_functions:
-            ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
+            if use_methods[cf] is True:
+                ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
 
     """
     Combined Analysis
@@ -166,7 +168,7 @@ def doConstrictPy(use_methods):
     # Functions that can be run on the combined datasets
     combined_functions = {
         "std_desc_stats": StdDescStats,
-        "std_ranking": StdDataRanking,
+        "std_data_ranking": StdDataRanking,
         "WGCNA": WGCNA,
         "std_cov": StdCov,
         "std_corr": StdCorr,
@@ -179,7 +181,8 @@ def doConstrictPy(use_methods):
     for ds in combined_datasets:
         logging.info(f"\tAnalysis of {ds.name}...")
         for cf in combined_functions:
-            ds.addStats(cf, combined_functions[cf](ds.source))
+            if use_methods[cf] is True:
+                ds.addStats(cf, combined_functions[cf](ds.source))
 
     """
     Output
@@ -206,7 +209,9 @@ def doConstrictPy(use_methods):
     ensureDir(R_DIR)
     batchSaveToFile(R_DIR, initial_datasets, "Rdata", clear=CLEAR_OUTPUT)
 
-
+    # archive the output
+    compressDir(OUTPUT_DIR + "/archive", OUTPUT_DIR)
+    moveToUploads(OUTPUT_DIR + "/archive.zip")
 # Initiate the main function and prevent the others from running without being
 # called
 if __name__ == "__main__":

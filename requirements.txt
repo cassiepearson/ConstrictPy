@@ -5,3 +5,9 @@ xlrd
 networkx
 matplotlib
 rpy2
+flask
+flask-wtf
+flask-sqlalchemy
+flask-migrate
+flask-bootstrap
+flask-login

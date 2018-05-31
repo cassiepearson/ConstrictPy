@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<h1 id="constrictpy">ConstrictPy</h1>
+<p><img src="assets/logo.png" /></p>
+<p>Original Philosophy: For all analysis, the entire table provided is used. This will need to be parsed down to the desired values. All math is done pairwise by columns. Data is reformatted manually before analysis to allow for clean labels during import. This program was originally written with a tool framework but then changed to a more basic framework to allow for efficient analysis. The approach for the code framework is “quick and dirty” with accurate analysis. For more flexible functionality, the program could be converted to a general tool. Of the desired provided analysis list, all analysis that has low statistical value or is not applicable is omitted.</p>
+<p>Current Philosophy: This project has expanded to make the set of methods original implemented here more efficient, accurate, and usable. From the original program, we have expanded the python tool to include more methods and a much more robust object-oriented framework. Additionally, now the python portion is a tool wrapper for the analysis in R. The analysis in R has become a project and package of its own. The project is still a work in progress and is expanding rapidly. Current plans involve the full project being available in July 2018.</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>Follow these instructions to install the in-development version of ConstrictPy.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>A working Python environment (Python 3.6.x)</li>
+<li>pip</li>
+<li>R</li>
+</ul>
+<p><em>Recommendation</em>: Use your preferred virtual environment tool to create an environment for developing this application.</p>
+<p><em>Double Secret Recommendation</em>: Use <code>Anaconda</code> as your python environment manager, and you can automatically use R as <code>.../anaconda/envs/$ENV/bin/R</code>.</p>
+<h3 id="installing">Installing</h3>
+<p>(Optional: activate your Python virtual environment.)</p>
+<p>Clone the project repository</p>
+<p><code>git clone https://github.com/ahoetker/ConstrictPy.git</code></p>
+<p>cd to the project directory</p>
+<p><code>cd ConstrictPy</code></p>
+<p>Install the project dependencies with pip</p>
+<p><code>pip install -r requirements.txt</code></p>
+<p>For package development, install the python package in development mode</p>
+<p><code>pip install -e .</code></p>
+<h2 id="running-tests">Running Tests</h2>
+<p>There are currently <em>no</em> tests for ConstrictPy, unit or otherwise.</p>
+<h2 id="deployment">Deployment</h2>
+<p>** Not recommended in this version **</p>
+<p>If the package is installed in development mode, remove it</p>
+<p><code>pip uninstall constrictpy</code></p>
+<p>install the package using pip</p>
+<p><code>pip install .</code></p>
+<h2 id="versioning">Versioning</h2>
+<p>There is currently <em>no</em> versioning system for ConstrictPy, we just use different branches.</p>
+<h2 id="authors">Authors</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Author</th>
+<th>Contact</th>
+<th>Github</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Christopher Negrich</td>
+<td>cnegrich@gmail.com</td>
+<td><a href="https://github.com/cnegrich">cnegrich</a></td>
+</tr>
+<tr class="even">
+<td>Andrew Hoetker</td>
+<td>ahoetker@me.com</td>
+<td><a href="https://github.com/ahoetker">ahoetker</a></td>
+</tr>
+<tr class="odd">
+<td>Courtney Johnson</td>
+<td>cejohn32@asu.edu</td>
+<td><a href="https://github.com/cejohn32">cejohn32</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="license">License</h2>
+<p>There is currently <em>no</em> license for ConstrictPy, but <strong>no stealing</strong>.</p>
+{% endblock %}
