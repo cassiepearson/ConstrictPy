@@ -16,24 +16,27 @@ from constrictpy.std_stats import (  # Descriptive stats, ranking, covariance fu
     StdCov,
 )
 from constrictpy.wgcna import WGCNA  # Weighted Correlation Network Analysis
-from constrictpy.io_handling import ensureDir, batchSaveToFile, compressDir, moveToUploads
+from constrictpy.io_handling import (
+    ensureDir,
+    batchSaveToFile,
+    compressDir,
+)
 from constrictpy.rfunctions import sourceRFunctions, rFunc
 import logging
 from constrictpy.logger import startLogger
+import os
 
 """
 Main function
 """
 
 
-def doConstrictPy(datafile, use_methods):
-
+def doConstrictPy(datafile, use_methods, output_dir):
     """
     Define Constants
     """
-    OUTPUT_DIR = "output-files/"  # Define the output directory
-    CSV_DIR = OUTPUT_DIR + "csv/"  # Define the CSV data directory
-    R_DIR = OUTPUT_DIR + "r-data-objects/"  # Define the R data directory
+    CSV_DIR = os.path.join(output_dir, "csv")  # Define the CSV data directory
+    R_DIR = os.path.join(output_dir, "r-data-objects")  # Define the R data directory
     CLEAR_OUTPUT = True  # Clear output directories before saving files
     LOG_LEVEL = "info"
     CLEAR_LOG = True
@@ -66,8 +69,6 @@ def doConstrictPy(datafile, use_methods):
     sheet_16S_2016_OTU = Dataset("sheet_16S_2016_OTU", excel_file.parse("16S_2016_OTU"))
     sheet_combined_14 = Dataset("sheet_combined_14", excel_file.parse("combined_14"))
     sheet_combined_16 = Dataset("sheet_combined_16", excel_file.parse("combined_16"))
-
-
 
     """
     Rpy2 Spinup
@@ -126,7 +127,6 @@ def doConstrictPy(datafile, use_methods):
     # List of correlation functions to be run
     corr_functions = {"std_corr": StdCorr, "spr_corr": SprCorr, "kt_corr": KtCorr}
 
-
     # Run the correlation functions in corr_functions on the corr_datasets
     logging.info("Calculating Correlation...")
     for ds in corr_datasets:
@@ -174,7 +174,7 @@ def doConstrictPy(datafile, use_methods):
     """
 
     # Make sure the output directory exists
-    ensureDir(OUTPUT_DIR)
+    ensureDir(output_dir)
 
     # CSV stuff
     ensureDir(CSV_DIR)
@@ -185,8 +185,9 @@ def doConstrictPy(datafile, use_methods):
     batchSaveToFile(R_DIR, initial_datasets, "Rdata", clear=CLEAR_OUTPUT)
 
     # archive the output
-    compressDir(OUTPUT_DIR + "/archive", OUTPUT_DIR)
-    moveToUploads(OUTPUT_DIR + "/archive.zip")
+    compressDir(os.path.join(output_dir, "archive"), output_dir)
+
+
 # Initiate the main function and prevent the others from running without being
 # called
 if __name__ == "__main__":
