@@ -1,27 +1,7 @@
 """
-ConstrictPy
-Authored by:
-    Christopher Negrich - contact at cnegrich@gmail.com
-    Andrew Hoetker - contact at ahoetker@asu.edu
-    Courtney Johnson - contact at cejohn32@asu.edu
-    TODO: add Gabriel
-Last Updated: October 2017
-
-This program is designed to allow for a variety of similar data sets to be
-analyzed. Modifying the main function and splitting the rest into module(s)
-as needed could generalize the functionality if needed for alternative data
-sets.
-
-Modifications for generalization into tool (next step):
-    //TODO:
-        -Port all documentation to github
-        -Create a user interface (Chris)
-        -Port algorithms to R
-        -Create functions for graphing
-        -Further subdivide and enumerate possible algorithms
-            -Allow for as much user choice as possible
-        -Find test data sets - Random data, other experimental data
-
+analyze.py
+This module exists to provide doConstrictPy to the webapp.
+It is a modified form of constrictpy/microbiome_analysis_arctic.py
 
 """
 # Import all needed packages, see documentation for details
@@ -50,11 +30,7 @@ def doConstrictPy(datafile, use_methods):
 
     """
     Define Constants
-    Set the output directories
-    Choose whether to reset the output directory
-    Choose whether to print stats summary to console
     """
-    VERBOSE = False  # Print DataFrames to console during file output
     OUTPUT_DIR = "output-files/"  # Define the output directory
     CSV_DIR = OUTPUT_DIR + "csv/"  # Define the CSV data directory
     R_DIR = OUTPUT_DIR + "r-data-objects/"  # Define the R data directory
@@ -71,6 +47,8 @@ def doConstrictPy(datafile, use_methods):
     """
     Data Import
     Parse sheets of the excel data into six Dataset objects as dataset.source
+    In this version, analyze.py is only intended to handle the data included
+    with the package, 'Prepared_Data.xlsx'
     """
     # Excel file
     excel_file = pd.ExcelFile(datafile)
@@ -89,6 +67,18 @@ def doConstrictPy(datafile, use_methods):
     sheet_combined_14 = Dataset("sheet_combined_14", excel_file.parse("combined_14"))
     sheet_combined_16 = Dataset("sheet_combined_16", excel_file.parse("combined_16"))
 
+
+
+    """
+    Rpy2 Spinup
+    Start the Rpy2 instance and source functions from ConstrictR
+    """
+    sourceRFunctions()
+
+    """
+    Descriptive statistics, Ranking, WGCNA, Covariance for each sheet
+    Dataframes are added to Dataset objects
+    """
     # Create an array of imported sheets
     initial_datasets = [
         sheet_2014,
@@ -101,21 +91,11 @@ def doConstrictPy(datafile, use_methods):
         sheet_combined_16,
     ]
 
-    """
-    Rpy2 Spinup
-    Start the Rpy2 instance and source functions from ConstrictR
-    """
-    sourceRFunctions()
-
-    """
-    Descriptive statistics, Ranking, WGCNA, Covariance for each sheet
-    Dataframes are added to Dataset objects
-    """
-
     # Run basic statistical analysis over all sheets in initial_dataset list
     logging.info(
-        "Calculating Descriptive Statistics, Ranking, WCGNA, and Covariance..."
+        "Calculating Descriptive Statistics, Ranking, WGCNA, and Covariance..."
     )
+
     for ds in initial_datasets:
         logging.info(f"\tAnalysis of {ds.name}...")
         if use_methods["std_desc_stats"] is True:
@@ -192,11 +172,6 @@ def doConstrictPy(datafile, use_methods):
     Save DataFrames to CSV files
     Save Dataframes to Rdata files
     """
-
-    # Print to console
-    if VERBOSE is True:
-        for ds in initial_datasets:
-            ds.logStats()
 
     # Make sure the output directory exists
     ensureDir(OUTPUT_DIR)
