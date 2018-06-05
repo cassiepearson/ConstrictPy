@@ -6,14 +6,15 @@ from flask import (
     url_for,
     send_from_directory,
     current_app,
+    session,
 )
 from werkzeug.utils import secure_filename
-from shutil import copyfile
 from app import app
 from app.forms import MethodSelectionForm, DataUploadForm
 from constrictpy.analyze import doConstrictPy
 from constrictpy.io_handling import ensureDir, clearDir
-from time import strftime
+from time import time
+from hashlib import md5
 
 
 @app.route("/")
@@ -34,9 +35,12 @@ def upload():
         f = form.datafile.data
         filename = secure_filename(f.filename)
         uploads = os.path.join(current_app.root_path, app.config["UPLOAD_FOLDER"])
-        ensureDir(uploads)
-        clearDir(uploads)
-        f.save(os.path.join(uploads, filename))
+        hash = md5((filename + str(time())).encode()).hexdigest()
+        session['hash'] = hash
+        session['uploads'] = os.path.join(uploads, hash)
+        ensureDir(session['uploads'])
+        clearDir(session['uploads'])
+        f.save(os.path.join(session['uploads'], filename))
         flash("{} uploaded successfully!".format(filename))
         return redirect(url_for("selectmethods"))
     return render_template("upload.html", form=form)
@@ -49,7 +53,7 @@ def selectmethods():
         data = form.data.copy()
         del (data["csrf_token"])
         del (data["submit"])
-        uploads = os.path.join(current_app.root_path, app.config["UPLOAD_FOLDER"])
+        uploads = session['uploads']
         datafile = os.path.join(uploads, "Prepared_Data.xlsx")
         doConstrictPy(datafile, data, output_dir=uploads)
         return redirect(url_for("analysis"))
