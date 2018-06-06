@@ -43,7 +43,7 @@ def upload():
         f.save(os.path.join(session['uploads'], filename))
         flash("{} uploaded successfully!".format(filename))
         return redirect(url_for("selectmethods"))
-    return render_template("upload.html", form=form)
+    return render_template("upload.html", form=form, title="Upload")
 
 
 @app.route("/selectmethods", methods=["GET", "POST"])

@@ -19,7 +19,7 @@ from constrictpy.wgcna import WGCNA  # Weighted Correlation Network Analysis
 from constrictpy.io_handling import (
     ensureDir,
     batchSaveToFile,
-    compressDir,
+    compressOutputFiles,
 )
 from constrictpy.rfunctions import sourceRFunctions, rFunc
 import logging
@@ -184,8 +184,8 @@ def doConstrictPy(datafile, use_methods, output_dir):
     ensureDir(R_DIR)
     batchSaveToFile(R_DIR, initial_datasets, "Rdata", clear=CLEAR_OUTPUT)
 
-    # archive the output
-    compressDir(os.path.join(output_dir, "archive"), output_dir)
+    # create an archive of the output files
+    compressOutputFiles(output_dir)
 
 
 # Initiate the main function and prevent the others from running without being

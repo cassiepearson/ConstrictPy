@@ -4,7 +4,8 @@ import errno  # Used to check for race condition in ensureDir
 import rpy2.robjects as robjects
 from rpy2.robjects import pandas2ri
 import logging
-from shutil import make_archive, copytree, copyfile
+import shutil
+import tempfile
 
 
 def clearDir(dir_path):  # remove all files from a directory
@@ -21,11 +22,24 @@ def ensureDir(dir_path):  # create the directory if it doesn't exist
             raise  # OK, then tell me about it.
 
 
-def compressDir(target, root_dir):
+def compressOutputFiles(output_dir):
     """
-    Takes a directory and returns the compressed result as a file path
+    Compress the current contents of the output directory to archive.zip, then place
+    that archive in the output directory.
+    The method for creating a temporary compressed directory comes from Martijn Pieters
+    https://stackoverflow.com/a/11967760
     """
-    make_archive(target, "zip", root_dir)
+    tmpdir = tempfile.mkdtemp()
+    logging.info("Compressing output files")
+    try:
+        tmparchive = os.path.join(tmpdir, 'archive')
+        root_dir = output_dir
+        data = open(shutil.make_archive(tmparchive, 'zip', root_dir), 'rb').read()
+        with open(os.path.join(output_dir, "archive.zip"), "wb+") as archive:
+            archive.write(data)
+    finally:
+        logging.info("Removing temporary compressed directory")
+        shutil.rmtree(tmpdir)
 
 
 def datasetToCSV(output_dir, dataset):
