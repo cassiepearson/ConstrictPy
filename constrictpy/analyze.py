@@ -98,7 +98,7 @@ def doConstrictPy(datafile, use_methods, output_dir):
     )
 
     for ds in initial_datasets:
-        logging.info(f"\tAnalysis of {ds.name}...")
+        logging.info("\tAnalysis of {}...".format(ds.name))
         if use_methods["std_desc_stats"] is True:
             ds.addStats("std_desc_stats", rFunc("desc_stats", ds.source))
         if use_methods["std_data_ranking"] is True:
@@ -130,7 +130,7 @@ def doConstrictPy(datafile, use_methods, output_dir):
     # Run the correlation functions in corr_functions on the corr_datasets
     logging.info("Calculating Correlation...")
     for ds in corr_datasets:
-        logging.info(f"\tAnalysis of {ds.name}...")
+        logging.info("\tAnalysis of {}...".format(ds.name))
         for cf in corr_functions:
             if use_methods[cf] is True:
                 ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
@@ -159,7 +159,7 @@ def doConstrictPy(datafile, use_methods, output_dir):
     # Run the combined functions on the combined datasets
     logging.info("Calculating Combined Analysis...")
     for ds in combined_datasets:
-        logging.info(f"\tAnalysis of {ds.name}...")
+        logging.info("\tAnalysis of {}...".format(ds.name))
         for cf in combined_functions:
             if use_methods[cf] is True:
                 ds.addStats(cf, combined_functions[cf](ds.source))

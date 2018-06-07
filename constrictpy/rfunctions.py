@@ -12,7 +12,7 @@ import pkg_resources
 def sourceRFunctions():
     """
     Source .R files from ConstrictR into the RPy2 engine.
-    Should be called near the top of main program. 
+    Should be called near the top of main program.
     """
     pandas2ri.activate()
 
@@ -27,8 +27,9 @@ def sourceRFunctions():
 
 def rFunc(r_function_name, df):
     """
-    Passes the string r_function_name and the DataFrame df to Rpy2. 
+    Passes the string r_function_name and the DataFrame df to Rpy2.
     Returns the DataFrame from R once converted back to pandas DataFrame.
     """
-    r_df = r[f"{r_function_name}"](df)
+    # r_df = r[f"{r_function_name}"](df)
+    r_df = r["{}".format(r_function_name)](df)
     return pandas2ri.ri2py_dataframe(r_df)
