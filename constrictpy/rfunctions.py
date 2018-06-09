@@ -7,6 +7,10 @@ import rpy2.robjects as robjects
 from rpy2.robjects import r, pandas2ri
 import os
 import pkg_resources
+from constrictpy.logger import getLogger
+
+# define module-level logger
+logger = getLogger(__name__, "info")
 
 
 def sourceRFunctions():
@@ -22,6 +26,7 @@ def sourceRFunctions():
     for file in os.listdir(r_dir):
         if os.path.splitext(file)[1] == ".R" and file not in blacklist:
             rfile = os.path.join(r_dir, file)
+            logger.info("rpy2 source functions from {}".format(file))
             r["source"](rfile)
 
 

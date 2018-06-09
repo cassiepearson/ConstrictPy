@@ -1,6 +1,9 @@
 import pandas as pd  # Necessary to handle dataframes
-import logging
 from constrictpy.logger import getLogger
+
+# define module-level logger
+logger = getLogger(__name__, "info")
+
 
 class Dataset:
 
@@ -28,10 +31,9 @@ class Dataset:
 
     def logStats(self):
         """ Print all statistics with labels """
-        logger = getLogger("Dataset", "info")
         for label in self.stats:
-            logging.info(label)
-            logging.info(self.stats[label])
+            logger.info(label)
+            logger.info(self.stats[label])
 
     def statsToCSV(self, output_dir):
         """

@@ -16,16 +16,13 @@ from constrictpy.std_stats import (  # Descriptive stats, ranking, covariance fu
     StdCov,
 )
 from constrictpy.wgcna import WGCNA  # Weighted Correlation Network Analysis
-from constrictpy.io_handling import (
-    ensureDir,
-    batchSaveToFile,
-    compressOutputFiles,
-)
+from constrictpy.io_handling import ensureDir, batchSaveToFile, compressOutputFiles
 from constrictpy.rfunctions import sourceRFunctions, rFunc
-import logging
 from constrictpy.logger import getLogger
 import os
 
+# define module-level logger
+logger = getLogger(__name__, "info")
 """
 Main function
 """
@@ -44,7 +41,6 @@ def doConstrictPy(datafile, use_methods, output_dir):
     """
     Start logging. The logger module is found in constrictpy/logging.py
     """
-    logger = getLogger("analyze", "info")
     logger.info("Starting")
 
     """
@@ -93,9 +89,7 @@ def doConstrictPy(datafile, use_methods, output_dir):
     ]
 
     # Run basic statistical analysis over all sheets in initial_dataset list
-    logger.info(
-        "Calculating Descriptive Statistics, Ranking, WGCNA, and Covariance..."
-    )
+    logger.info("Calculating Descriptive Statistics, Ranking, WGCNA, and Covariance...")
 
     for ds in initial_datasets:
         logger.info("\tAnalysis of {}...".format(ds.name))

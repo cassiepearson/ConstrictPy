@@ -3,13 +3,13 @@ import os
 import errno  # Used to check for race condition in ensureDir
 import rpy2.robjects as robjects
 from rpy2.robjects import pandas2ri
-import logging
 import shutil
 import tempfile
 from constrictpy.logger import getLogger
 
 # define module-level logger
 logger = getLogger(__name__, "info")
+
 
 def clearDir(dir_path):  # remove all files from a directory
     filelist = glob.glob(os.path.join(dir_path, "*.*"))
@@ -35,9 +35,9 @@ def compressOutputFiles(output_dir):
     tmpdir = tempfile.mkdtemp()
     logger.info("Compressing output files")
     try:
-        tmparchive = os.path.join(tmpdir, 'archive')
+        tmparchive = os.path.join(tmpdir, "archive")
         root_dir = output_dir
-        data = open(shutil.make_archive(tmparchive, 'zip', root_dir), 'rb').read()
+        data = open(shutil.make_archive(tmparchive, "zip", root_dir), "rb").read()
         with open(os.path.join(output_dir, "archive.zip"), "wb+") as archive:
             archive.write(data)
     finally:
@@ -91,7 +91,6 @@ def batchSaveToFile(output_dir, datasets, filetype, clear=False):
     # logging.info(f"Saving dataframes to {output_dir} as type {filetype}...")
     logger.info("Saving dataframes to {0} as type {1}...".format(output_dir, filetype))
 
-
     filetype = str.lower(str(filetype))  # quick and dirty normalization
 
     if filetype == "csv":
@@ -106,6 +105,8 @@ def batchSaveToFile(output_dir, datasets, filetype, clear=False):
             datasetToRdata(output_dir, dataset)
     else:
         # logging.warning(f"\t{filetype} is not an acceptable filetype (csv, r, rdata)")
-        logger.warning("\t{} is not an acceptable filetype (csv, r, rdata)".format(filetype))
+        logger.warning(
+            "\t{} is not an acceptable filetype (csv, r, rdata)".format(filetype)
+        )
 
     logger.info("{} batch save complete".format(filetype))
