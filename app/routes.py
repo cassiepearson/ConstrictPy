@@ -15,7 +15,7 @@ from constrictpy.analyze import doConstrictPy
 from constrictpy.io_handling import ensureDir, clearDir
 from time import time
 from hashlib import md5
-
+import threading
 
 @app.route("/")
 @app.route("/index")
@@ -35,7 +35,7 @@ def upload():
         f = form.datafile.data
         filename = secure_filename(f.filename)
         uploads = os.path.join(current_app.root_path, app.config["UPLOAD_FOLDER"])
-        hash = md5((filename + str(time())).encode()).hexdigest()
+        hash = md5((filename + str(time())).encode()).hexdigest()  # ugly
         session['hash'] = hash
         session['uploads'] = os.path.join(uploads, hash)
         ensureDir(session['uploads'])

@@ -1,6 +1,6 @@
 import pandas as pd  # Necessary to handle dataframes
 import logging
-
+from constrictpy.logger import getLogger
 
 class Dataset:
 
@@ -28,6 +28,7 @@ class Dataset:
 
     def logStats(self):
         """ Print all statistics with labels """
+        logger = getLogger("Dataset", "info")
         for label in self.stats:
             logging.info(label)
             logging.info(self.stats[label])

@@ -6,7 +6,10 @@ from rpy2.robjects import pandas2ri
 import logging
 import shutil
 import tempfile
+from constrictpy.logger import getLogger
 
+# define module-level logger
+logger = getLogger(__name__, "info")
 
 def clearDir(dir_path):  # remove all files from a directory
     filelist = glob.glob(os.path.join(dir_path, "*.*"))
@@ -30,7 +33,7 @@ def compressOutputFiles(output_dir):
     https://stackoverflow.com/a/11967760
     """
     tmpdir = tempfile.mkdtemp()
-    logging.info("Compressing output files")
+    logger.info("Compressing output files")
     try:
         tmparchive = os.path.join(tmpdir, 'archive')
         root_dir = output_dir
@@ -38,7 +41,7 @@ def compressOutputFiles(output_dir):
         with open(os.path.join(output_dir, "archive.zip"), "wb+") as archive:
             archive.write(data)
     finally:
-        logging.info("Removing temporary compressed directory")
+        logger.info("Removing temporary compressed directory")
         shutil.rmtree(tmpdir)
 
 
@@ -86,7 +89,7 @@ def batchSaveToFile(output_dir, datasets, filetype, clear=False):
         clearDir(output_dir)  # clear before writing new files
 
     # logging.info(f"Saving dataframes to {output_dir} as type {filetype}...")
-    logging.info("Saving dataframes to {0} as type {1}...".format(output_dir, filetype))
+    logger.info("Saving dataframes to {0} as type {1}...".format(output_dir, filetype))
 
 
     filetype = str.lower(str(filetype))  # quick and dirty normalization
@@ -94,15 +97,15 @@ def batchSaveToFile(output_dir, datasets, filetype, clear=False):
     if filetype == "csv":
         for dataset in datasets:
             # logging.info(f"\tSaving dataframes from {dataset.name}...")
-            logging.info("\tSaving dataframes from {}...".format(dataset.name))
+            logger.info("\tSaving dataframes from {}...".format(dataset.name))
             datasetToCSV(output_dir, dataset)
     elif filetype == "r" or filetype == "rdata":
         for dataset in datasets:
             # logging.info(f"\tSaving dataframes from {dataset.name}...")
-            logging.info("\tSaving dataframes from {}...".format(dataset.name))
+            logger.info("\tSaving dataframes from {}...".format(dataset.name))
             datasetToRdata(output_dir, dataset)
     else:
         # logging.warning(f"\t{filetype} is not an acceptable filetype (csv, r, rdata)")
-        logging.warning("\t{} is not an acceptable filetype (csv, r, rdata)".format(filetype))
+        logger.warning("\t{} is not an acceptable filetype (csv, r, rdata)".format(filetype))
 
-    logging.info("{} batch save complete".format(filetype))
+    logger.info("{} batch save complete".format(filetype))

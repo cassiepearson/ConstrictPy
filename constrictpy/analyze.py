@@ -23,7 +23,7 @@ from constrictpy.io_handling import (
 )
 from constrictpy.rfunctions import sourceRFunctions, rFunc
 import logging
-from constrictpy.logger import startLogger
+from constrictpy.logger import getLogger
 import os
 
 """
@@ -44,8 +44,8 @@ def doConstrictPy(datafile, use_methods, output_dir):
     """
     Start logging. The logger module is found in constrictpy/logging.py
     """
-    startLogger(LOG_LEVEL, CLEAR_LOG)
-    logging.info("Starting")
+    logger = getLogger("analyze", "info")
+    logger.info("Starting")
 
     """
     Data Import
@@ -93,12 +93,12 @@ def doConstrictPy(datafile, use_methods, output_dir):
     ]
 
     # Run basic statistical analysis over all sheets in initial_dataset list
-    logging.info(
+    logger.info(
         "Calculating Descriptive Statistics, Ranking, WGCNA, and Covariance..."
     )
 
     for ds in initial_datasets:
-        logging.info("\tAnalysis of {}...".format(ds.name))
+        logger.info("\tAnalysis of {}...".format(ds.name))
         if use_methods["std_desc_stats"] is True:
             ds.addStats("std_desc_stats", rFunc("desc_stats", ds.source))
         if use_methods["std_data_ranking"] is True:
@@ -128,9 +128,9 @@ def doConstrictPy(datafile, use_methods, output_dir):
     corr_functions = {"std_corr": StdCorr, "spr_corr": SprCorr, "kt_corr": KtCorr}
 
     # Run the correlation functions in corr_functions on the corr_datasets
-    logging.info("Calculating Correlation...")
+    logger.info("Calculating Correlation...")
     for ds in corr_datasets:
-        logging.info("\tAnalysis of {}...".format(ds.name))
+        logger.info("\tAnalysis of {}...".format(ds.name))
         for cf in corr_functions:
             if use_methods[cf] is True:
                 ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
@@ -157,9 +157,9 @@ def doConstrictPy(datafile, use_methods, output_dir):
     }
 
     # Run the combined functions on the combined datasets
-    logging.info("Calculating Combined Analysis...")
+    logger.info("Calculating Combined Analysis...")
     for ds in combined_datasets:
-        logging.info("\tAnalysis of {}...".format(ds.name))
+        logger.info("\tAnalysis of {}...".format(ds.name))
         for cf in combined_functions:
             if use_methods[cf] is True:
                 ds.addStats(cf, combined_functions[cf](ds.source))
