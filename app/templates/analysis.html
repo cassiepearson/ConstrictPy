@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>Analysis Complete!</h1>
+    <p>
+        ConstrictPy has analyzed your data. An archive of the resulting CSV files
+        can be downloaded <a href="{{ 'uploads/%s/archive.zip'%session['hash'] }}">here.</a>
+    </p>
+
+{% endblock %}

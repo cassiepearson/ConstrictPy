@@ -1,34 +1,11 @@
 """
-ConstrictPy
-Authored by:
-    Christopher Negrich - contact at cnegrich@gmail.com
-    Andrew Hoetker - contact at ahoetker@asu.edu
-    Courtney Johnson - contact at cejohn32@asu.edu
-    TODO: add Gabriel
-Last Updated: October 2017
-
-This program is designed to allow for a variety of similar data sets to be
-analyzed. Modifying the main function and splitting the rest into module(s)
-as needed could generalize the functionality if needed for alternative data
-sets.
-
-Modifications for generalization into tool (next step):
-    //TODO:
-        -Port all documentation to github
-        -Create a user interface (Chris)
-        -Port algorithms to R
-        -Create functions for graphing
-        -Further subdivide and enumerate possible algorithms
-            -Allow for as much user choice as possible
-        -Find test data sets - Random data, other experimental data
-
+analyze.py
+This module exists to provide doConstrictPy to the webapp.
+It is a modified form of constrictpy/microbiome_analysis_arctic.py
 
 """
 # Import all needed packages, see documentation for details
 import pandas as pd
-import numpy as np  # NumPy statistical package, needed for networkx graphs
-import scipy.cluster.hierarchy as hier  # Heirarchical clustering functions
-import networkx as nx  # Network statistical package for centrality
 
 # Import custom modules and classes
 from constrictpy.Dataset import Dataset  # Dataset classes
@@ -39,28 +16,27 @@ from constrictpy.std_stats import (  # Descriptive stats, ranking, covariance fu
     StdCov,
 )
 from constrictpy.wgcna import WGCNA  # Weighted Correlation Network Analysis
-from constrictpy.io_handling import ensureDir, batchSaveToFile
+from constrictpy.io_handling import (
+    ensureDir,
+    batchSaveToFile,
+    compressOutputFiles,
+)
 from constrictpy.rfunctions import sourceRFunctions, rFunc
 import logging
-from logger import startLogger
+from constrictpy.logger import startLogger
+import os
 
 """
 Main function
 """
 
 
-def doConstrictPy(use_methods):
-
+def doConstrictPy(datafile, use_methods, output_dir):
     """
     Define Constants
-    Set the output directories
-    Choose whether to reset the output directory
-    Choose whether to print stats summary to console
     """
-    VERBOSE = False  # Print DataFrames to console during file output
-    OUTPUT_DIR = "output-files/"  # Define the output directory
-    CSV_DIR = OUTPUT_DIR + "csv/"  # Define the CSV data directory
-    R_DIR = OUTPUT_DIR + "r-data-objects/"  # Define the R data directory
+    CSV_DIR = os.path.join(output_dir, "csv")  # Define the CSV data directory
+    R_DIR = os.path.join(output_dir, "r-data-objects")  # Define the R data directory
     CLEAR_OUTPUT = True  # Clear output directories before saving files
     LOG_LEVEL = "info"
     CLEAR_LOG = True
@@ -74,9 +50,11 @@ def doConstrictPy(use_methods):
     """
     Data Import
     Parse sheets of the excel data into six Dataset objects as dataset.source
+    In this version, analyze.py is only intended to handle the data included
+    with the package, 'Prepared_Data.xlsx'
     """
     # Excel file
-    excel_file = pd.ExcelFile("Prepared_Data.xlsx")
+    excel_file = pd.ExcelFile(datafile)
 
     # Import excel sheets
     sheet_2014 = Dataset("sheet_2014", excel_file.parse("sample_conditions_year_2014"))
@@ -92,6 +70,16 @@ def doConstrictPy(use_methods):
     sheet_combined_14 = Dataset("sheet_combined_14", excel_file.parse("combined_14"))
     sheet_combined_16 = Dataset("sheet_combined_16", excel_file.parse("combined_16"))
 
+    """
+    Rpy2 Spinup
+    Start the Rpy2 instance and source functions from ConstrictR
+    """
+    sourceRFunctions()
+
+    """
+    Descriptive statistics, Ranking, WGCNA, Covariance for each sheet
+    Dataframes are added to Dataset objects
+    """
     # Create an array of imported sheets
     initial_datasets = [
         sheet_2014,
@@ -104,28 +92,21 @@ def doConstrictPy(use_methods):
         sheet_combined_16,
     ]
 
-    """
-    Rpy2 Spinup
-    Start the Rpy2 instance and source functions from ConstrictR
-    """
-    sourceRFunctions()
-
-    """
-    Descriptive statistics, Ranking, WGCNA, Covariance for each sheet
-    Dataframes are added to Dataset objects
-    """
-
     # Run basic statistical analysis over all sheets in initial_dataset list
     logging.info(
-        "Calculating Descriptive Statistics, Ranking, WCGNA, and Covariance..."
+        "Calculating Descriptive Statistics, Ranking, WGCNA, and Covariance..."
     )
+
     for ds in initial_datasets:
-        logging.info(f"\tAnalysis of {ds.name}...")
-        # ds.addStats("std_desc_stats", StdDescStats(ds.source))
-        ds.addStats("std_desc_stats", rFunc("desc_stats", ds.source))
-        ds.addStats("std_data_ranking", StdDataRanking(ds.source))
-        ds.addStats("WGCNA", WGCNA(ds.source))
-        ds.addStats("std_cov", StdCov(ds.source))
+        logging.info("\tAnalysis of {}...".format(ds.name))
+        if use_methods["std_desc_stats"] is True:
+            ds.addStats("std_desc_stats", rFunc("desc_stats", ds.source))
+        if use_methods["std_data_ranking"] is True:
+            ds.addStats("std_data_ranking", StdDataRanking(ds.source))
+        if use_methods["WGCNA"] is True:
+            ds.addStats("WGCNA", WGCNA(ds.source))
+        if use_methods["std_cov"] is True:
+            ds.addStats("std_cov", StdCov(ds.source))
 
     """
     Correlation Analysis
@@ -149,9 +130,10 @@ def doConstrictPy(use_methods):
     # Run the correlation functions in corr_functions on the corr_datasets
     logging.info("Calculating Correlation...")
     for ds in corr_datasets:
-        logging.info(f"\tAnalysis of {ds.name}...")
+        logging.info("\tAnalysis of {}...".format(ds.name))
         for cf in corr_functions:
-            ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
+            if use_methods[cf] is True:
+                ds.addStats("%s" % (cf), corr_functions[cf](ds.source))
 
     """
     Combined Analysis
@@ -166,7 +148,7 @@ def doConstrictPy(use_methods):
     # Functions that can be run on the combined datasets
     combined_functions = {
         "std_desc_stats": StdDescStats,
-        "std_ranking": StdDataRanking,
+        "std_data_ranking": StdDataRanking,
         "WGCNA": WGCNA,
         "std_cov": StdCov,
         "std_corr": StdCorr,
@@ -177,9 +159,10 @@ def doConstrictPy(use_methods):
     # Run the combined functions on the combined datasets
     logging.info("Calculating Combined Analysis...")
     for ds in combined_datasets:
-        logging.info(f"\tAnalysis of {ds.name}...")
+        logging.info("\tAnalysis of {}...".format(ds.name))
         for cf in combined_functions:
-            ds.addStats(cf, combined_functions[cf](ds.source))
+            if use_methods[cf] is True:
+                ds.addStats(cf, combined_functions[cf](ds.source))
 
     """
     Output
@@ -190,13 +173,8 @@ def doConstrictPy(use_methods):
     Save Dataframes to Rdata files
     """
 
-    # Print to console
-    if VERBOSE is True:
-        for ds in initial_datasets:
-            ds.logStats()
-
     # Make sure the output directory exists
-    ensureDir(OUTPUT_DIR)
+    ensureDir(output_dir)
 
     # CSV stuff
     ensureDir(CSV_DIR)
@@ -205,6 +183,9 @@ def doConstrictPy(use_methods):
     # R stuff
     ensureDir(R_DIR)
     batchSaveToFile(R_DIR, initial_datasets, "Rdata", clear=CLEAR_OUTPUT)
+
+    # create an archive of the output files
+    compressOutputFiles(output_dir)
 
 
 # Initiate the main function and prevent the others from running without being

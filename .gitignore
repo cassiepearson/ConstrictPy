@@ -21,3 +21,12 @@
 
 # MacOS-specific binary info
 .DS_Store
+
+# server-related non-code files
+/instance/*
+/instance/
+/app/uploads/*
+
+# Docker stuff not ready yet
+Dockerfile
+boot.sh

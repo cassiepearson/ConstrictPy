@@ -1,11 +1,11 @@
 import glob
 import os
-import os.path
 import errno  # Used to check for race condition in ensureDir
-import pandas as pd
 import rpy2.robjects as robjects
-from rpy2.robjects import r, pandas2ri
+from rpy2.robjects import pandas2ri
 import logging
+import shutil
+import tempfile
 
 
 def clearDir(dir_path):  # remove all files from a directory
@@ -20,6 +20,26 @@ def ensureDir(dir_path):  # create the directory if it doesn't exist
     except OSError as e:  # why does the OS complain about making the dir?
         if e.errno != errno.EEXIST:  # is it just because the dir exists? No?
             raise  # OK, then tell me about it.
+
+
+def compressOutputFiles(output_dir):
+    """
+    Compress the current contents of the output directory to archive.zip, then place
+    that archive in the output directory.
+    The method for creating a temporary compressed directory comes from Martijn Pieters
+    https://stackoverflow.com/a/11967760
+    """
+    tmpdir = tempfile.mkdtemp()
+    logging.info("Compressing output files")
+    try:
+        tmparchive = os.path.join(tmpdir, 'archive')
+        root_dir = output_dir
+        data = open(shutil.make_archive(tmparchive, 'zip', root_dir), 'rb').read()
+        with open(os.path.join(output_dir, "archive.zip"), "wb+") as archive:
+            archive.write(data)
+    finally:
+        logging.info("Removing temporary compressed directory")
+        shutil.rmtree(tmpdir)
 
 
 def datasetToCSV(output_dir, dataset):
@@ -65,19 +85,24 @@ def batchSaveToFile(output_dir, datasets, filetype, clear=False):
     if clear is True:
         clearDir(output_dir)  # clear before writing new files
 
-    logging.info(f"Saving dataframes to {output_dir} as type {filetype}...")
+    # logging.info(f"Saving dataframes to {output_dir} as type {filetype}...")
+    logging.info("Saving dataframes to {0} as type {1}...".format(output_dir, filetype))
+
 
     filetype = str.lower(str(filetype))  # quick and dirty normalization
 
     if filetype == "csv":
         for dataset in datasets:
-            logging.info(f"\tSaving dataframes from {dataset.name}...")
+            # logging.info(f"\tSaving dataframes from {dataset.name}...")
+            logging.info("\tSaving dataframes from {}...".format(dataset.name))
             datasetToCSV(output_dir, dataset)
     elif filetype == "r" or filetype == "rdata":
         for dataset in datasets:
-            logging.info(f"\tSaving dataframes from {dataset.name}...")
+            # logging.info(f"\tSaving dataframes from {dataset.name}...")
+            logging.info("\tSaving dataframes from {}...".format(dataset.name))
             datasetToRdata(output_dir, dataset)
     else:
-        logging.warning(f"\t{filetype} is not an acceptable filetype (csv, r, rdata)")
+        # logging.warning(f"\t{filetype} is not an acceptable filetype (csv, r, rdata)")
+        logging.warning("\t{} is not an acceptable filetype (csv, r, rdata)".format(filetype))
 
     logging.info("{} batch save complete".format(filetype))
