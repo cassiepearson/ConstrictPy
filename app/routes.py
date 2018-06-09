@@ -15,6 +15,7 @@ from constrictpy.analyze import doConstrictPy
 from constrictpy.io_handling import ensureDir, clearDir
 from time import time
 from hashlib import md5
+import threading
 
 
 @app.route("/")
@@ -35,12 +36,12 @@ def upload():
         f = form.datafile.data
         filename = secure_filename(f.filename)
         uploads = os.path.join(current_app.root_path, app.config["UPLOAD_FOLDER"])
-        hash = md5((filename + str(time())).encode()).hexdigest()
-        session['hash'] = hash
-        session['uploads'] = os.path.join(uploads, hash)
-        ensureDir(session['uploads'])
-        clearDir(session['uploads'])
-        f.save(os.path.join(session['uploads'], filename))
+        hash = md5((filename + str(time())).encode()).hexdigest()  # ugly
+        session["hash"] = hash
+        session["uploads"] = os.path.join(uploads, hash)
+        ensureDir(session["uploads"])
+        clearDir(session["uploads"])
+        f.save(os.path.join(session["uploads"], filename))
         flash("{} uploaded successfully!".format(filename))
         return redirect(url_for("selectmethods"))
     return render_template("upload.html", form=form, title="Upload")
@@ -53,7 +54,7 @@ def selectmethods():
         data = form.data.copy()
         del (data["csrf_token"])
         del (data["submit"])
-        uploads = session['uploads']
+        uploads = session["uploads"]
         datafile = os.path.join(uploads, "Prepared_Data.xlsx")
         doConstrictPy(datafile, data, output_dir=uploads)
         return redirect(url_for("analysis"))
