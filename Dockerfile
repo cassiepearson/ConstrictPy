@@ -27,7 +27,7 @@ COPY app app
 COPY constrictpy constrictpy
 COPY ConstrictR ConstrictR
 COPY logs logs
-COPY setup.py webapp.py config.py boot.sh ./
+COPY setup.py webapp.py config.py docker/boot.sh ./
 
 RUN \
   python3 -m pip --no-cache-dir install pip --upgrade && \
