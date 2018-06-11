@@ -27,6 +27,3 @@
 /instance/
 /app/uploads/*
 
-# Docker stuff not ready yet
-Dockerfile
-boot.sh
