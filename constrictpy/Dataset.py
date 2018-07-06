@@ -6,7 +6,6 @@ logger = getLogger(__name__, "info")
 
 
 class Dataset:
-
     def __init__(self, name, source):
         """
         Initialize Dataset
