@@ -5,7 +5,7 @@
 # Required Parameters: df: dataframe
 # Optional Parameters:
 
-cent <- function(df,verbose=FALSE) {
+cent <- function(df,verbose=FALSE)
 
 
   # Print and return results
