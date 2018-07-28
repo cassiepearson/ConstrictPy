@@ -5,7 +5,7 @@ Use the Pandas applymap to do a WGCNA on each sheet.
 import pandas as pd  # Necessary to handle dataframes
 
 
-def WGCNA(data_frame):
+def WGCNA(data_frame: pd.DataFrame) -> pd.DataFrame:
     # Create the Pearson Correlation Matrix
     wc_corr = data_frame.corr(method="pearson")
 

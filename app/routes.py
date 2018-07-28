@@ -15,7 +15,6 @@ from constrictpy.analyze import doConstrictPy
 from constrictpy.io_handling import ensureDir, clearDir
 from time import time
 from hashlib import md5
-import threading
 
 
 @app.route("/")

@@ -1,11 +1,12 @@
 import logging
 import pkg_resources
 from time import strftime
+from typing import Dict
 
-loggers = {}
+loggers: Dict[str, logging.Logger] = {}
 
 
-def getLogger(name, logmode, clear=True):
+def getLogger(name: str, logmode: str, clear: bool = True) -> logging.Logger:
 
     global loggers
 

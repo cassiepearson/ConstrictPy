@@ -20,6 +20,7 @@ from constrictpy.io_handling import ensureDir, batchSaveToFile, compressOutputFi
 from constrictpy.rfunctions import sourceRFunctions, rFunc
 from constrictpy.logger import getLogger
 import os
+from typing import Dict
 
 # define module-level logger
 logger = getLogger(__name__, "info")
@@ -28,7 +29,7 @@ Main function
 """
 
 
-def doConstrictPy(datafile, use_methods, output_dir):
+def doConstrictPy(datafile: str, use_methods: Dict[str, bool], output_dir: str) -> None:
     """
     Define Constants
     """
@@ -180,9 +181,3 @@ def doConstrictPy(datafile, use_methods, output_dir):
 
     # create an archive of the output files
     compressOutputFiles(output_dir)
-
-
-# Initiate the main function and prevent the others from running without being
-# called
-if __name__ == "__main__":
-    doConstrictPy()

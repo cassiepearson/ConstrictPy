@@ -7,13 +7,16 @@ import rpy2.robjects as robjects
 from rpy2.robjects import r, pandas2ri
 import os
 import pkg_resources
+import pandas as pd
 from constrictpy.logger import getLogger
+from typing import List
+
 
 # define module-level logger
 logger = getLogger(__name__, "info")
 
 
-def sourceRFunctions():
+def sourceRFunctions() -> None:
     """
     Source .R files from ConstrictR into the RPy2 engine.
     Should be called near the top of main program.
@@ -21,7 +24,7 @@ def sourceRFunctions():
     pandas2ri.activate()
 
     r_dir = pkg_resources.resource_filename("ConstrictR", "")
-    blacklist = []
+    blacklist: List[str] = []
 
     for file in os.listdir(r_dir):
         if os.path.splitext(file)[1] == ".R" and file not in blacklist:
@@ -30,7 +33,7 @@ def sourceRFunctions():
             r["source"](rfile)
 
 
-def rFunc(r_function_name, df):
+def rFunc(r_function_name: str, df: pd.DataFrame) -> pd.DataFrame:
     """
     Passes the string r_function_name and the DataFrame df to Rpy2.
     Returns the DataFrame from R once converted back to pandas DataFrame.

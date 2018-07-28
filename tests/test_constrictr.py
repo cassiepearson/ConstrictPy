@@ -23,6 +23,7 @@ def test_desc_stats():
     assert result["sd"][0] == 4.423960733486292
     assert result["se"][1] == 1.6720999872456608
 
+
 # TODO: test adj_matrix
 
 # TODO: test banner
