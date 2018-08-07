@@ -17,7 +17,7 @@ from constrictpy.std_stats import (  # Descriptive stats, ranking, covariance fu
 )
 from constrictpy.wgcna import WGCNA  # Weighted Correlation Network Analysis
 from constrictpy.io_handling import ensureDir, batchSaveToFile, compressOutputFiles
-from constrictpy.rfunctions import sourceRFunctions, rFunc
+from constrictpy.rfunctions import source_packages, r_to_pandas
 from constrictpy.logger import getLogger
 import os
 from typing import Dict
@@ -68,10 +68,13 @@ def doConstrictPy(datafile: str, use_methods: Dict[str, bool], output_dir: str) 
     sheet_combined_16 = Dataset("sheet_combined_16", excel_file.parse("combined_16"))
 
     """
-    Rpy2 Spinup
-    Start the Rpy2 instance and source functions from ConstrictR
+    ConstrictR package import
+    Acquire Dict of R packages from constrictpy.rfunctions
+    The R functions contained in these packages can be accessed using Python scope,
+    e.g. desc_stats_function = constrictr_packages["desc_stats"].desc_stats
+    These functions have name attributes __rname__
     """
-    sourceRFunctions()
+    constrictr_packages = source_packages()
 
     """
     Descriptive statistics, Ranking, WGCNA, Covariance for each sheet
@@ -95,7 +98,8 @@ def doConstrictPy(datafile: str, use_methods: Dict[str, bool], output_dir: str) 
     for ds in initial_datasets:
         logger.info("\tAnalysis of {}...".format(ds.name))
         if use_methods["std_desc_stats"] is True:
-            ds.addStats("std_desc_stats", rFunc("desc_stats", ds.source))
+            desc_stats = constrictr_packages["desc_stats"].desc_stats
+            ds.addStats(desc_stats.__rname__, r_to_pandas(desc_stats(ds.source)))
         if use_methods["std_data_ranking"] is True:
             ds.addStats("std_data_ranking", StdDataRanking(ds.source))
         if use_methods["WGCNA"] is True:

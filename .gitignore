@@ -27,3 +27,9 @@
 /instance/
 /app/uploads/*
 
+# mypy cache
+/.mypy_cache/
+
+# Jupyter notebooks
+/notebooks/
+/notebooks/*
