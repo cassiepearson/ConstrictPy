@@ -3,8 +3,7 @@ python:
   - "3.5"
   - "3.6"
 before_install:
-  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-  - sudo add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/'
+  - sudo add-apt-repository ppa:marutter/rrutter
   - sudo apt-get update -qq
   - sudo apt-get install -qq r-base
 install:
