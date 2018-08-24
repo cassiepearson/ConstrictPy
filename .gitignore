@@ -6,6 +6,7 @@
 
 # output files
 /output-files/*
+/.pytest_cache/
 
 # Setuptools distribution folder
 /dist/

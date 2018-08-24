@@ -55,6 +55,8 @@ def source_packages() -> Dict[str, SignatureTranslatedAnonymousPackage]:
     r_package_files = [
         "adj_matrix.R",
         "banner.R",
+        "centrality.R",
+        "clust.R",
         "corr.R",
         "covar.R",
         "desc_stats.R",
@@ -63,7 +65,7 @@ def source_packages() -> Dict[str, SignatureTranslatedAnonymousPackage]:
         "sparse.R",
         "sparsity.R",
         "wcgna.R",
-    ]  # missing clust.R and centrality.R
+    ]
 
     # Initialize module-level Dict of R packages, indexed by string
     sourced_r_packages: Dict[str, SignatureTranslatedAnonymousPackage] = {}
