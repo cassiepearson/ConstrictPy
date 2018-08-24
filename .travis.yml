@@ -3,7 +3,7 @@ python:
   - "3.5"
   - "3.6"
 before_install:
-  - sudo add-apt-repository -qq ppa:marutter/rrutter
+  - sudo add-apt-repository ppa:marutter/rrutter -y
   - sudo apt-get update -qq
   - sudo apt-get install -qq r-base
 install:
