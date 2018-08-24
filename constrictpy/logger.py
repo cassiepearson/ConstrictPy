@@ -3,7 +3,7 @@ import pkg_resources
 from time import strftime
 from typing import Dict
 
-loggers: Dict[str, logging.Logger] = {}
+loggers = {}
 
 
 def getLogger(name: str, logmode: str, clear: bool = True) -> logging.Logger:
