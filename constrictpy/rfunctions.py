@@ -68,8 +68,12 @@ def source_packages() -> Dict[str, SignatureTranslatedAnonymousPackage]:
     ]
 
     # Initialize module-level Dict of R packages, indexed by string
-    sourced_r_packages: Dict[str, SignatureTranslatedAnonymousPackage] = {}
-
+    sourced_r_packages = {}
+    """
+    The previous line was,
+    #sourced_r_packages: Dict[str, SignatureTranslatedAnonymousPackage] = {}
+    but variable type annotations are not supported in python <3.6.x
+    """
     # add packages to the module-level Dict
     for filename in r_package_files:
         r_package_file = os.path.join(r_dir, filename)
