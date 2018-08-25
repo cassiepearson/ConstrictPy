@@ -9,7 +9,7 @@
 #                      thresh: the threshold for the adjacency matrix calculation, recommended changed to 6 for unsigned,
 #                      verbose: Change to true for printing returned results to console
 
-wcgna <- function(df,signed=TRUE,thresh=12,verbose=FALSE){
+wgcna <- function(df,signed=TRUE,thresh=12,verbose=FALSE){
   # Create Pearson's correlation matrix
   corr <- cor(df, use="complete.obs", method="pearson")
 

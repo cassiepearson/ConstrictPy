@@ -8,7 +8,5 @@ rpy2
 tzlocal
 flask
 flask-wtf
-flask-sqlalchemy
-flask-migrate
 flask-bootstrap
-flask-login
+pytest

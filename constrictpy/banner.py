@@ -1,7 +1,7 @@
 # Banner Function
 
 
-def banner():
+def banner() -> None:
     # ASCII Art Generated at http://www.network-science.de/ascii/ (Font: Big)
     print(
         """

@@ -7,7 +7,7 @@ pandas.
 """
 
 
-def StdDescStats(data_frame):
+def StdDescStats(data_frame: pd.DataFrame) -> pd.DataFrame:
     # All optional parameters excluded
     desc_stats = data_frame.describe()
     return desc_stats
@@ -19,7 +19,7 @@ Compute numerical data ranks (1 through n) along provided axis.
 """
 
 
-def StdDataRanking(data_frame):
+def StdDataRanking(data_frame: pd.DataFrame) -> pd.DataFrame:
     # Data Frame ranking, rank = 0 for rows, rank = 1 for columns
     ranked_frame = data_frame.rank(1)
     return ranked_frame
@@ -33,7 +33,7 @@ exclude NA/null variables.
 """
 
 
-def StdCov(data_frame):
+def StdCov(data_frame: pd.DataFrame) -> pd.DataFrame:
     # Standard Covariance
     cov_frame = data_frame.cov()
     return cov_frame

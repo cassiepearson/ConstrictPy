@@ -1,11 +1,12 @@
 import logging
 import pkg_resources
 from time import strftime
+from typing import Dict
 
 loggers = {}
 
 
-def getLogger(name, logmode, clear=True):
+def getLogger(name: str, logmode: str, clear: bool = True) -> logging.Logger:
 
     global loggers
 
@@ -23,7 +24,7 @@ def getLogger(name, logmode, clear=True):
 
         # set the log filename
         ts = strftime("%Y-%m-%d-%H.%M.%S")
-        logfile = pkg_resources.resource_filename("logs", "logs/{}.log".format(ts))
+        logfile = pkg_resources.resource_filename("logs", "{}.log".format(ts))
 
         # clear the log file
         if clear is True:

@@ -6,18 +6,20 @@ from rpy2.robjects import pandas2ri
 import shutil
 import tempfile
 from constrictpy.logger import getLogger
+from constrictpy.Dataset import Dataset
+from typing import List
 
 # define module-level logger
 logger = getLogger(__name__, "info")
 
 
-def clearDir(dir_path):  # remove all files from a directory
+def clearDir(dir_path: str) -> None:  # remove all files from a directory
     filelist = glob.glob(os.path.join(dir_path, "*.*"))
     for f in filelist:
         os.remove(f)
 
 
-def ensureDir(dir_path):  # create the directory if it doesn't exist
+def ensureDir(dir_path: str) -> None:  # create the directory if it doesn't exist
     try:
         os.makedirs(dir_path)
     except OSError as e:  # why does the OS complain about making the dir?
@@ -25,7 +27,7 @@ def ensureDir(dir_path):  # create the directory if it doesn't exist
             raise  # OK, then tell me about it.
 
 
-def compressOutputFiles(output_dir):
+def compressOutputFiles(output_dir: str) -> None:
     """
     Compress the current contents of the output directory to archive.zip, then place
     that archive in the output directory.
@@ -45,7 +47,7 @@ def compressOutputFiles(output_dir):
         shutil.rmtree(tmpdir)
 
 
-def datasetToCSV(output_dir, dataset):
+def datasetToCSV(output_dir: str, dataset: Dataset) -> None:
     """
     Takes an output directory and dataset as arguments, and puts all the
     stats in that dataset into labelled .csv files in output_dir.
@@ -57,7 +59,7 @@ def datasetToCSV(output_dir, dataset):
         export_data[label].to_csv(file_path)
 
 
-def datasetToRdata(output_dir, dataset):
+def datasetToRdata(output_dir: str, dataset: Dataset) -> None:
     """
     Takes an output directory and dataset as arguments, converts the stats
     in that dataset to R dataframes, then saves the R dataframes as labelled
@@ -73,7 +75,9 @@ def datasetToRdata(output_dir, dataset):
         robjects.r("save(%s, file='%s')" % (label, file_path))
 
 
-def batchSaveToFile(output_dir, datasets, filetype, clear=False):
+def batchSaveToFile(
+    output_dir: str, datasets: List[Dataset], filetype: str, clear: bool = False
+) -> None:
     """
     Save lots of dataframes to files. This is probably the function to call
     in main(), instead of iterating over datasetToX.

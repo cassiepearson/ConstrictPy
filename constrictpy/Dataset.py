@@ -1,5 +1,6 @@
 import pandas as pd  # Necessary to handle dataframes
 from constrictpy.logger import getLogger
+from typing import Dict
 
 # define module-level logger
 logger = getLogger(__name__, "info")
@@ -7,7 +8,7 @@ logger = getLogger(__name__, "info")
 
 class Dataset:
 
-    def __init__(self, name, source):
+    def __init__(self, name: str, source: pd.DataFrame) -> None:
         """
         Initialize Dataset
 
@@ -19,7 +20,7 @@ class Dataset:
         self.source = source
         self.stats = {"source": self.source}
 
-    def addStats(self, label, frame):
+    def addStats(self, label: str, frame: pd.DataFrame) -> None:
         """
         Add DataFrame of statistics to self.stats
 
@@ -29,13 +30,13 @@ class Dataset:
         """
         self.stats[label] = frame
 
-    def logStats(self):
+    def logStats(self) -> None:
         """ Print all statistics with labels """
         for label in self.stats:
             logger.info(label)
             logger.info(self.stats[label])
 
-    def statsToCSV(self, output_dir):
+    def statsToCSV(self, output_dir: str) -> None:
         """
         DEPRECATED IN FAVOR OF io_handling FUNCTION AND Dataset.getStats
         Save all statistics as CSV files in the format:
@@ -49,7 +50,7 @@ class Dataset:
             filename = "{0}{1}_{2}.csv".format(output_dir, label, self.name)
             self.stats[label].to_csv(filename)
 
-    def getStats(self):
+    def getStats(self) -> Dict[str, pd.DataFrame]:
         """
         Return dict of DataFrames in self.stats with _sheetname added
 

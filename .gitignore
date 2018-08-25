@@ -2,10 +2,11 @@
 *.pyc
 
 # log files
-/logs/*
+*.log
 
 # output files
 /output-files/*
+/.pytest_cache/
 
 # Setuptools distribution folder
 /dist/
@@ -27,3 +28,9 @@
 /instance/
 /app/uploads/*
 
+# mypy cache
+/.mypy_cache/
+
+# Jupyter notebooks
+/notebooks/
+/notebooks/*
