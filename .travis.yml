@@ -1,14 +1,15 @@
 language: python
 python:
-  - "3.5"
-  - "3.6"
+- '3.5'
+- '3.6'
 before_install:
-  - sudo add-apt-repository ppa:marutter/rrutter -y
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq r-base
+- sudo add-apt-repository ppa:marutter/rrutter -y
+- sudo apt-get update -qq
+- sudo apt-get install -qq r-base
 install:
-  - pip install -r requirements.txt
+- pip install -r requirements.txt
 script:
-  - pytest
+- pytest
 notifications:
-  slack: constrictproject:ARJgSrhVJqdPp6FdzwFxLVqq
+  slack:
+    secure: CDz5sRWPJLQbrSfJdhTzHoDGalO1fcbiKRZ5BbFrX31irLF1DfAGNVUR13GoNL/JVLsU3nCfYZVJDNtir55iYVNuIlDbauT37XTM14SCzLled9T0hSTHPTrwj6sDH2tW/jayksYWz21FUgCFtd3Rksr04y5No1Fw4MmbUKeHySvjToLWOjkBaw1aJYpJ+WbrnKJhW8JZAmgGPm3wJypgoWhgmxqaKVF6fK8+wE1lza9n2E5ALL0Y6PWevck33dMqQfGke63zUaBNoS9p9DI9BK4SOoni0UH47xNC1vs2TeXd6lPa+0rABlOLglGi/aA+/YpwK6aNoFDKOTS/2/3i1JZnQSCyPFyckXLkcmFxHQY1bC2tSy+gsypBXdGF/BppfFQ+UyQ33RfFLCNdFAiRBFGyNX8iS3USjRUWDETge+skBWe0EJsStN2P0ue6pr4DTxiQFXP0/93Sj/03HN1KXBsuRb/Dn8Zj8HZXU8dsKu4jCbiIoGA73uaxKJJwsGmou3rhl7bXZvAdBS2WHVGREF4olAwmQMGS/Gn4SnKsWKBgsKecpQ/MuHW95HLLpgHRLj9XLceUexAWsVOJthOzFJY/yECKYJn65diVIsDFPKLcdRRqdmnecItqlXD34P4i9glZNhB5eWe2DT26/f7w09bgrDEegbnhQPaTtMvC9xg=
