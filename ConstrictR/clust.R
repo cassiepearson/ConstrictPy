@@ -8,7 +8,6 @@
 
 
 # Load kmeans function file
-source("CR-kMean.R")
 
 clust <-
   function(df,
@@ -33,6 +32,7 @@ clust <-
       # Set distance matrix
       distMetric <- setDist(distance = "euclid_square")
       # Run kmeans function
+        source("CR-kMean.R")
       return(cRKMPP(iter), ...)
     }
     

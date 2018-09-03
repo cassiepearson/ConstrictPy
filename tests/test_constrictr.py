@@ -20,6 +20,9 @@ constrictr_packages = rfunctions.source_packages()
 
 # TODO: test adj_matrix
 def test_adj_matrix():
+    for key in constrictr_packages:
+        print("{}: {}".format(key, constrictr_packages[key]))
+
     adj_matrix = constrictr_packages["adj_matrix"].adj_matrix
     assert type(adj_matrix) == rpy2.robjects.functions.SignatureTranslatedFunction
 

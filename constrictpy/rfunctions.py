@@ -51,7 +51,9 @@ def source_packages() -> Dict[str, SignatureTranslatedAnonymousPackage]:
     This is the purpose of the whole file
     """
     # Define R packages directory, and the package files to be imported
+    workdir = os.getcwd()
     r_dir = pkg_resources.resource_filename("ConstrictR", "")
+    os.chdir(r_dir)
     r_package_files = [
         "adj_matrix.R",
         "ap_short.R",
@@ -95,4 +97,5 @@ def source_packages() -> Dict[str, SignatureTranslatedAnonymousPackage]:
         except Exception as err:
             logger.warning("{}: {}".format(r_package_file, err))
 
+    os.chdir(workdir)
     return sourced_r_packages
