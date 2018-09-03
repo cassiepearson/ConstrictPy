@@ -51,20 +51,34 @@ def source_packages() -> Dict[str, SignatureTranslatedAnonymousPackage]:
     This is the purpose of the whole file
     """
     # Define R packages directory, and the package files to be imported
+    workdir = os.getcwd()
     r_dir = pkg_resources.resource_filename("ConstrictR", "")
+    os.chdir(r_dir)
     r_package_files = [
         "adj_matrix.R",
+        "ap_short.R",
         "banner.R",
         "centrality.R",
+        "closeness_centrality.R",
         "clust.R",
         "corr.R",
         "covar.R",
+        "CR-kBounds.R",
+        "CR-kCHelp.R",
+        "CR-kCluster.R",
+        "CR-kCSetup.R",
+        "CR-kMean.R",
+        "CR-kSeeding.R",
+        "degree_centrality.R",
         "desc_stats.R",
         "df_rank.R",
+        "dist_matrix.R",
+        "dist_metric.R",
+        "hierarchical.R",
         "rank.R",
         "sparse.R",
         "sparsity.R",
-        "wcgna.R",
+        "topo_matrix.R",
     ]
 
     # Initialize module-level Dict of R packages, indexed by string
@@ -83,4 +97,5 @@ def source_packages() -> Dict[str, SignatureTranslatedAnonymousPackage]:
         except Exception as err:
             logger.warning("{}: {}".format(r_package_file, err))
 
+    os.chdir(workdir)
     return sourced_r_packages
