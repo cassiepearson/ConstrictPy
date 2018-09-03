@@ -17,6 +17,7 @@ to be tested, and checking that it is a SignatureTranslatedFunction.
 constrictr_packages = rfunctions.source_packages()
 
 
+
 # TODO: test adj_matrix
 def test_adj_matrix():
     adj_matrix = constrictr_packages["adj_matrix"].adj_matrix
@@ -133,7 +134,7 @@ def test_dist_metric():
 
 def test_hierarchical():
     hierarchical = constrictr_packages["hierarchical"]
-    assert type(hierarchical.linkCrit) == rpy2.robjects.functions.SignatureTranslatedFunction
+    assert type(hierarchical.hierarchical) == rpy2.robjects.functions.SignatureTranslatedFunction
 
 def test_rank():
     # TODO: Write functionality tests for rank

@@ -6,7 +6,7 @@
 source("CR-kSeeding.R")
 source("CR-kCluster.R")
 source("CR-kCSetup.R")
-source("CR-kHelp.R")
+source("CR-kCHelp.R")
 
 # Create an environment to hold clustering data through recursive calls
 kMEnv <- new.env()

@@ -7,10 +7,8 @@
 #     repeat: repeat clustering to gain more accurate results, column: column major, verbose: print results
 
 
-# Load agglomerative hierarcical function file
-source("hierarchical.R")
 # Load kmeans function file
-source("kPlus.R")
+source("CR-kMean.R")
 
 clust <-
   function(df,
@@ -26,6 +24,8 @@ clust <-
     if (k == Inf) {
       # Set distance matrix
       distMetric <- setDist(distance = "euclidean")
+        # Load agglomerative hierarcical function file
+        source("hierarchical.R")
       # Run hierarchical clustering
       return(hierarchical())
     }
