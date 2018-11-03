@@ -32,39 +32,6 @@ def about():
     return render_template("about.html", title="About")
 
 
-@app.route("/upload", methods=["GET", "POST"])
-def upload():
-    form = DataUploadForm()
-    if form.validate_on_submit():
-        f = form.datafile.data
-        filename = secure_filename(f.filename)
-        uploads = os.path.join(current_app.root_path, app.config["UPLOAD_FOLDER"])
-        hash = md5((filename + str(time())).encode()).hexdigest()  # ugly
-        session["hash"] = hash
-        session["uploads"] = os.path.join(uploads, hash)
-        session["filename"] = filename
-        ensureDir(session["uploads"])
-        clearDir(session["uploads"])
-        f.save(os.path.join(session["uploads"], filename))
-        flash("{} uploaded successfully!".format(filename))
-        return redirect(url_for("selectmethods"))
-    return render_template("upload.html", form=form, title="Upload")
-
-
-@app.route("/selectmethods", methods=["GET", "POST"])
-def selectmethods():
-    form = MethodSelectionForm()
-    if form.validate_on_submit():
-        data = form.data.copy()
-        del (data["csrf_token"])
-        del (data["submit"])
-        uploads = session["uploads"]
-        datafile = os.path.join(uploads, session["filename"])
-        doConstrictPy(datafile, data, output_dir=uploads)
-        return redirect(url_for("analysis"))
-    return render_template("selectmethods.html", title="Select Methods", form=form)
-
-
 @app.route("/newjob", methods=["GET", "POST"])
 def newjob():
     form = CombinedForm()
@@ -96,12 +63,7 @@ def newjob():
         J.launch_task("analyze_job")
         db.session.commit()
         return redirect(url_for("upload_success"))
-    return render_template("selectmethods.html", title="New Job", form=form)
-
-
-@app.route("/analysis")
-def analysis():
-    return render_template("analysis.html", title="Analysis")
+    return render_template("newjob.html", title="New Job", form=form)
 
 
 @app.route("/upload_success")
