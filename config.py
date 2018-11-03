@@ -4,5 +4,14 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config(object):
+    # CSRF token generation
     SECRET_KEY = os.environ.get("SECRET_KEY") or "alsdfjklasdklfj"
-    UPLOAD_FOLDER = "uploads"
+
+    # flask-sqlalchemy
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or \
+        "sqlite:///" + os.path.join(basedir, "app.db")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Directories
+    UPLOAD_FOLDER = "app/uploads"
+    RESULTS_FOLDER = "app/results"

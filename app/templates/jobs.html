@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h1>Completed Jobs</h1>
+    <ul>
+      {% for job in completed %}
+      <li>{{ job.name }}: <a href="{{ '/results/%s/archive.zip'%job.hash }}">Results</a></li>
+      {% endfor %}
+    </ul>
+    <h1>Pending Jobs</h1>
+    <ul>
+      {% for job in pending %}
+      <li>{{ job.name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
