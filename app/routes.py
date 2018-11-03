@@ -95,13 +95,18 @@ def newjob():
         db.session.add(J)
         J.launch_task("analyze_job")
         db.session.commit()
-        return redirect(url_for("analysis"))
+        return redirect(url_for("upload_success"))
     return render_template("selectmethods.html", title="New Job", form=form)
 
 
 @app.route("/analysis")
 def analysis():
     return render_template("analysis.html", title="Analysis")
+
+
+@app.route("/upload_success")
+def upload_success():
+    return render_template("upload_success.html", title="Success")
 
 
 @app.route("/jobs")
