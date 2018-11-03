@@ -88,15 +88,12 @@ def newjob():
             uploaded=datetime.now(),
             source=os.path.abspath(source_file),
             methods=json.dumps(methods),
-            completed=False,
             result_dir=os.path.join(results, hash),
-            result_zip=os.path.join(results, "{}.zip".format(hash))
+            result_zip=os.path.join(results, hash, "archive.zip"),
+            complete=False,
         )
         db.session.add(J)
-        db.session.commit()
-        # doConstrictPy(f, data, output_dir=os.path.join(results, hash))
-        analyzeJob(J)
-        J.completed = True
+        J.launch_task("analyze_job")
         db.session.commit()
         return redirect(url_for("analysis"))
     return render_template("selectmethods.html", title="New Job", form=form)
@@ -109,11 +106,14 @@ def analysis():
 
 @app.route("/jobs")
 def jobs():
-    jobs = Job.query.all()
-    completed = list(filter(lambda j: j.completed is True, jobs))
-    print(completed)
-    pending = list(filter(lambda j: j.completed is False, jobs))
-
+    joblist = Job.query.all()
+    completed = []
+    pending = []
+    for job in joblist:
+        if os.path.exists(os.path.abspath(job.result_zip)):
+            completed.append(job)
+        else:
+            pending.append(job)
     return render_template("jobs.html", title="Jobs", completed=completed, pending=pending)
 
 

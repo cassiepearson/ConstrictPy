@@ -12,6 +12,9 @@ class Config(object):
         "sqlite:///" + os.path.join(basedir, "app.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # Redis
+    REDIS_URL = os.environ.get("REDIS_URL") or "redis://"
+
     # Directories
     UPLOAD_FOLDER = "app/uploads"
     RESULTS_FOLDER = "app/results"

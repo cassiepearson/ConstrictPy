@@ -19,10 +19,12 @@ from constrictpy.wgcna import WGCNA  # Weighted Correlation Network Analysis
 from constrictpy.io_handling import ensureDir, batchSaveToFile, compressOutputFiles
 from constrictpy.rfunctions import source_packages, r_to_pandas
 from constrictpy.logger import getLogger
+from app import app, db
 from app.models import Job
 import os
 from typing import Dict
 import json
+import time
 
 # define module-level logger
 logger = getLogger(__name__, "info")
@@ -168,6 +170,17 @@ def analyzeJob(job: Job) -> None:
                 ds.addStats(cf, combined_functions[cf](ds.source))
 
     """
+    Delays
+    These exist for testing, basically.
+    """
+    if use_methods["delay_short"] is True:
+        logger.warning("Inserting manual 30 second delay.")
+        time.sleep(30)
+    if use_methods["delay_long"] is True:
+        logger.warning("Inserting manual 5-minute delay.")
+        time.sleep(300)
+
+    """
     Output
 
     Print lots of stuff to console if VERBOSE
@@ -189,6 +202,10 @@ def analyzeJob(job: Job) -> None:
 
     # create an archive of the output files
     compressOutputFiles(job.result_dir)
+
+    app.app_context().push()
+    job.complete = True
+    db.session.commit()
 
 
 def doConstrictPy(datafile: str, use_methods: Dict[str, bool], output_dir: str) -> None:
@@ -324,7 +341,6 @@ def doConstrictPy(datafile: str, use_methods: Dict[str, bool], output_dir: str) 
         for cf in combined_functions:
             if use_methods[cf] is True:
                 ds.addStats(cf, combined_functions[cf](ds.source))
-
     """
     Output
 

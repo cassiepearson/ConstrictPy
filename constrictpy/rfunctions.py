@@ -14,6 +14,7 @@ import pkg_resources
 import pandas as pd
 from constrictpy.logger import getLogger
 from typing import Dict
+from app import app
 
 
 # define module-level logger
@@ -52,7 +53,7 @@ def source_packages() -> Dict[str, SignatureTranslatedAnonymousPackage]:
     """
     # Define R packages directory, and the package files to be imported
     workdir = os.getcwd()
-    r_dir = pkg_resources.resource_filename("ConstrictR", "")
+    r_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),"..","ConstrictR"))
     os.chdir(r_dir)
     r_package_files = [
         "adj_matrix.R",

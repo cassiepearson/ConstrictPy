@@ -41,5 +41,9 @@ class CombinedForm(FlaskForm):
     spr_corr = BooleanField("Spearman Rank Correlation", default=True)
     kt_corr = BooleanField("Kendall Tau Correlation", default=True)
 
+    # methods added to test backgrounding
+    delay_short = BooleanField("Add a 30-second delay", default=False)
+    delay_long = BooleanField("Add a 5-minute delay", default=False)
+
     # submit form
     submit = SubmitField("Analyze")
